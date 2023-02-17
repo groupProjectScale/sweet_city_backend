@@ -1,7 +1,6 @@
 package com.example.repository;
 
 import com.example.model.User;
-import com.example.repository.mappers.ActivityMapper;
 import com.example.repository.mappers.UserMapper;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;

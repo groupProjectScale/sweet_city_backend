@@ -14,12 +14,5 @@ public class ActivityRepository {
         this.activityMapper = activityMapper;
     }
 
-    private final String INSERT_Activity_SQL =
-            "INSERT INTO activity (username, firstname, lastname, email, password) " +
-                    "VALUES (:username, :firstname, :lastname, :email, :password);";
-
-
-
-
 
 }
