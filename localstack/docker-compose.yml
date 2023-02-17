@@ -1,0 +1,40 @@
+version: "2"
+services:
+  # aws local deployment
+  localstack:
+    container_name: localstack_demo
+    image: localstack/localstack:latest
+    environment:
+      - AWS_DEFAULT_REGION=us-east-1
+      - EDGE_PORT=4566
+      - SERVICES=s3, sqs, kinesis, cloudwatch, dynamo
+    ports:
+      - "4549-4566:4549-4566"
+    volumes:
+      - "${TEMPDIR:-/tmp/localstack}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./aws:/docker-entrypoint-initaws.d
+    command: sh -c "docker-entrypoint-initaws.d/init-service.sh"
+    networks:
+      - backend
+
+  # postgres set up
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - metadata_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=sweetcity_PSQL
+    networks:
+      - backend
+
+volumes:
+  metadata_data: {}
+
+networks:
+  backend: {}
