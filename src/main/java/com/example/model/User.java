@@ -8,7 +8,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
-    private String hashPasswordWithSalt; //hashed with salt
+    private String hashPasswordWithSalt; // hashed with salt
 
     public static final class Builder {
         private UUID userId;
@@ -19,16 +19,40 @@ public class User {
         private String hashPasswordWithSalt;
 
         public Builder() {}
+
         public static Builder newBuilder() {
             return new Builder();
         }
 
-        public Builder withUserId(UUID val) {userId = val;return this;}
-        public Builder withUserName(String val) {userName = val;return this;}
-        public Builder withFirstName(String val) {firstName = val;return this;}
-        public Builder withLastName(String val) {lastName = val;return this;}
-        public Builder withEmail(String val) {email = val;return this;}
-        public Builder withHashPasswordWithSalt(String val) {hashPasswordWithSalt = val;return this;}
+        public Builder withUserId(UUID val) {
+            userId = val;
+            return this;
+        }
+
+        public Builder withUserName(String val) {
+            userName = val;
+            return this;
+        }
+
+        public Builder withFirstName(String val) {
+            firstName = val;
+            return this;
+        }
+
+        public Builder withLastName(String val) {
+            lastName = val;
+            return this;
+        }
+
+        public Builder withEmail(String val) {
+            email = val;
+            return this;
+        }
+
+        public Builder withHashPasswordWithSalt(String val) {
+            hashPasswordWithSalt = val;
+            return this;
+        }
 
         public User build() {
             return new User(this);
@@ -43,7 +67,6 @@ public class User {
         setEmail(builder.email);
         setHashPasswordWithSalt(builder.hashPasswordWithSalt);
     }
-
 
     public UUID getUserId() {
         return userId;

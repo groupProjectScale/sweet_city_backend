@@ -17,5 +17,4 @@ public class SweetCityApplication {
     public String test() {
         return "test";
     }
-
 }

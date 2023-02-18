@@ -9,13 +9,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-@EnableConfigurationProperties({
-        DatabaseProperties.class
-})
+@EnableConfigurationProperties({DatabaseProperties.class})
 @Configuration
 @Profile("!test")
 public class DatabaseConfigurations {
     private final DatabaseProperties databaseProperties;
+
     public DatabaseConfigurations(DatabaseProperties databaseProperties) {
         this.databaseProperties = databaseProperties;
     }

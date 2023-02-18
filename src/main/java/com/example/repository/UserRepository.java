@@ -10,15 +10,15 @@ import org.springframework.stereotype.Repository;
 public class UserRepository {
     private Jdbi jdbi;
     private UserMapper userMapper;
+
     public UserRepository(Jdbi jdbi, UserMapper userMapper) {
         this.jdbi = jdbi;
         this.userMapper = userMapper;
     }
 
     private final String INSERT_CLIENT_SQL =
-            "INSERT INTO CLIENT (username, firstname, lastname, email, password) " +
-                    "VALUES (:username, :firstname, :lastname, :email, :password);";
-
+            "INSERT INTO CLIENT (username, firstname, lastname, email, password) "
+                    + "VALUES (:username, :firstname, :lastname, :email, :password);";
 
     public User addUser(User user) {
         try (Handle handle = jdbi.open()) {

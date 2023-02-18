@@ -1,37 +1,25 @@
 package com.example.configurations.properties;
 
+import javax.validation.constraints.NotEmpty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.context.annotation.Profile;
-
-import javax.validation.constraints.NotEmpty;
 
 @ConstructorBinding
 @ConfigurationProperties("sweetcity.database")
 @Profile("!test")
 public class DatabaseProperties {
-    @NotEmpty
-    private final String connectionKey;
-    @NotEmpty
-    private final String connType;
-    @NotEmpty
-    private final String host;
-    @NotEmpty
-    private final String db;
-    @NotEmpty
-    private final String user;
-    @NotEmpty
-    private final String password;
-    @NotEmpty
-    private final Integer minIdle;
-    @NotEmpty
-    private final Integer idleTimeout;
-    @NotEmpty
-    private final Integer maxPoolSize;
-    @NotEmpty
-    private final Integer connTimeout;
-    @NotEmpty
-    private final Integer port;
+    @NotEmpty private final String connectionKey;
+    @NotEmpty private final String connType;
+    @NotEmpty private final String host;
+    @NotEmpty private final String db;
+    @NotEmpty private final String user;
+    @NotEmpty private final String password;
+    @NotEmpty private final Integer minIdle;
+    @NotEmpty private final Integer idleTimeout;
+    @NotEmpty private final Integer maxPoolSize;
+    @NotEmpty private final Integer connTimeout;
+    @NotEmpty private final Integer port;
 
     public DatabaseProperties(
             String connectionKey,
@@ -44,8 +32,7 @@ public class DatabaseProperties {
             Integer idleTimeout,
             Integer maxPoolSize,
             Integer connTimeout,
-            Integer port
-    ) {
+            Integer port) {
         this.connectionKey = connectionKey;
         this.connType = connType;
         this.host = host;
@@ -62,10 +49,9 @@ public class DatabaseProperties {
     public String getJdbcUrl() {
         return String.format(
                 "jdbc:postgresql://%s:%s/%s?verifyServerCertificate=false&useSSL=false",
-                getHost(),
-                getPort(),
-                getDb());
+                getHost(), getPort(), getDb());
     }
+
     public String getConnectionKey() {
         return connectionKey;
     }
@@ -110,4 +96,3 @@ public class DatabaseProperties {
         return port;
     }
 }
-

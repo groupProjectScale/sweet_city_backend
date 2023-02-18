@@ -13,6 +13,4 @@ public class ActivityRepository {
         this.jdbi = jdbi;
         this.activityMapper = activityMapper;
     }
-
-
 }

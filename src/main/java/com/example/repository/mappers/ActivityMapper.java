@@ -1,13 +1,11 @@
 package com.example.repository.mappers;
 
-
 import com.example.model.Activity;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.springframework.stereotype.Component;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 @Component
 public class ActivityMapper implements RowMapper<Activity> {

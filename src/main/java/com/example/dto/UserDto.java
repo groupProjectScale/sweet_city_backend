@@ -9,7 +9,8 @@ public class UserDto {
     private String lastName;
     private String email;
     private String password;
-    public  UserDto() {}
+
+    public UserDto() {}
 
     public String getUserName() {
         return userName;

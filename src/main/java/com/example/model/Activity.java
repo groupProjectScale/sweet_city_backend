@@ -1,4 +1,5 @@
 package com.example.model;
+
 import java.util.UUID;
 
 public class Activity {
@@ -24,38 +25,49 @@ public class Activity {
         private Integer currentParticipants;
         private Integer minimumParticipants;
         private Integer maximumParticipants;
-        private Builder() {};
+
+        private Builder() {}
+        ;
+
         public static Builder newBuilder() {
             return new Builder();
         }
+
         public Builder withActivityId(UUID val) {
             activityId = val;
             return this;
         }
+
         public Builder withName(String val) {
             name = val;
             return this;
         }
+
         public Builder withUserId(UUID val) {
             userId = val;
             return this;
         }
+
         public Builder withStartTime(long val) {
             startTime = val;
             return this;
         }
+
         public Builder withEndTime(long val) {
             endTime = val;
             return this;
         }
+
         public Builder withLocationId(UUID val) {
             locationId = val;
             return this;
         }
+
         public Builder withPrice(double val) {
             price = val;
             return this;
         }
+
         public Builder withCurrentParticipants(int val) {
             currentParticipants = val;
             return this;
@@ -65,11 +77,15 @@ public class Activity {
             minimumParticipants = val;
             return this;
         }
+
         public Builder withMaximumParticipants(int val) {
             maximumParticipants = val;
             return this;
         }
-        public Activity build() {return new Activity(this);}
+
+        public Activity build() {
+            return new Activity(this);
+        }
     }
 
     public Activity(Builder builder) {

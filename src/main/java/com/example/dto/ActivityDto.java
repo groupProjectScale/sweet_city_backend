@@ -1,4 +1,3 @@
 package com.example.dto;
 
-public class ActivityDto {
-}
+public class ActivityDto {}

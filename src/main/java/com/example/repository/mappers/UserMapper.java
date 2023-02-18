@@ -1,13 +1,12 @@
 package com.example.repository.mappers;
 
-
 import com.example.model.User;
-import org.springframework.stereotype.Component;
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.jdbi.v3.core.statement.StatementContext;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.jdbi.v3.core.mapper.RowMapper;
+import org.jdbi.v3.core.statement.StatementContext;
+import org.springframework.stereotype.Component;
+
 @Component
 public class UserMapper implements RowMapper<User> {
     @Override
