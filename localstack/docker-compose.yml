@@ -21,10 +21,13 @@ services:
   # postgres set up
   postgres:
     container_name: postgres
-    image: postgres:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-postgres
     ports:
       - "5432:5432"
     volumes:
+      - ./postgres:/docker-entrypoint-initdb.d/
       - metadata_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
