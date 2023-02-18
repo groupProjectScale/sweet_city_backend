@@ -5,7 +5,7 @@ ext.libs = [
         'springbootStarterActuator': 'org.springframework.boot:spring-boot-starter-actuator',
         'springbootStarterValidation': 'org.springframework.boot:spring-boot-starter-validation',
         'jacksonDatabind': 'com.fasterxml.jackson.core:jackson-databind:2.13.3',
-        'HikariCP':'com.zaxxer:HikariCP:5.0.1',
+        'hikariCP':'com.zaxxer:HikariCP:5.0.1',
         'jdbi': 'org.jdbi:jdbi3-core:3.31.0',
         'awsS3':'software.amazon.awssdk:s3',
         'awsSqs': 'software.amazon.awssdk:sqs',

@@ -23,7 +23,7 @@ allprojects {
         implementation(libs.springbootStarterActuator)
         implementation(libs.springbootStarterValidation)
         implementation(libs.jacksonDatabind)
-        implementation(libs.HikariCP)
+        implementation(libs.hikariCP)
         implementation(libs.jdbi)
         implementation(libs.awsS3)
         implementation(libs.awsSqs)
