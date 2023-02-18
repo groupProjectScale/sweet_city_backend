@@ -1,11 +1,13 @@
 package com.example.model;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class Activity {
     private UUID activityId;
     private String name;
-    private UUID userId;
+    private UUID creatorId; //linked back to client table
     private long startTime;
     private long endTime;
     private UUID locationId;
@@ -13,11 +15,13 @@ public class Activity {
     private Integer currentParticipants;
     private Integer minimumParticipants;
     private Integer maximumParticipants;
+    private final Map<UUID, User> attendees = new HashMap<>();
+
 
     public static final class Builder {
         private UUID activityId;
         private String name;
-        private UUID userId;
+        private UUID creatorId;
         private long startTime;
         private long endTime;
         private UUID locationId;
@@ -27,7 +31,6 @@ public class Activity {
         private Integer maximumParticipants;
 
         private Builder() {}
-        ;
 
         public static Builder newBuilder() {
             return new Builder();
@@ -43,8 +46,8 @@ public class Activity {
             return this;
         }
 
-        public Builder withUserId(UUID val) {
-            userId = val;
+        public Builder withCreatorId(UUID val) {
+            creatorId = val;
             return this;
         }
 
@@ -91,7 +94,7 @@ public class Activity {
     public Activity(Builder builder) {
         setActivityId(builder.activityId);
         setName(builder.name);
-        setUserId(builder.userId);
+        setCreatorId(builder.creatorId);
         setStartTime(builder.startTime);
         setEndTime(builder.endTime);
         setLocationId(builder.locationId);
@@ -99,6 +102,13 @@ public class Activity {
         setCurrentParticipants(builder.currentParticipants);
         setMaximumParticipants(builder.maximumParticipants);
         setMinimumParticipants(builder.minimumParticipants);
+    }
+
+    public void addAttendee(User user) {
+        this.attendees.put(user.getUserId(), user);
+    }
+    public void removeAttendee(User user) {
+        this.attendees.remove(user.getUserId());
     }
 
     public UUID getActivityId() {
@@ -117,12 +127,10 @@ public class Activity {
         this.name = name;
     }
 
-    public UUID getUserId() {
-        return userId;
-    }
+    public UUID getCreatorId() { return creatorId;}
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
+    public void setCreatorId(UUID creatorId) {
+        this.creatorId = creatorId;
     }
 
     public long getStartTime() {
@@ -180,4 +188,6 @@ public class Activity {
     public void setMaximumParticipants(Integer maximumParticipants) {
         this.maximumParticipants = maximumParticipants;
     }
+    public Map<UUID, User> getAttendees() { return attendees; }
+
 }

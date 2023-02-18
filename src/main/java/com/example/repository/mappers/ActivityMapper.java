@@ -14,7 +14,7 @@ public class ActivityMapper implements RowMapper<Activity> {
         return Activity.Builder.newBuilder()
                 .withActivityId(rs.getObject("activity_id", java.util.UUID.class))
                 .withName(rs.getString("name"))
-                .withUserId(rs.getObject("user_id", java.util.UUID.class))
+                .withCreatorId(rs.getObject("user_id", java.util.UUID.class))
                 .withStartTime(rs.getTimestamp("start_time").getTime())
                 .withEndTime(rs.getTimestamp("end_time").getTime())
                 .withLocationId(rs.getObject("location_id", java.util.UUID.class))

@@ -4,9 +4,9 @@ import com.example.dto.UserDto;
 import com.example.model.User;
 import com.example.services.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 public class UserController {
@@ -25,6 +25,15 @@ public class UserController {
         User newUser = userService.addUser(user);
         return ResponseEntity.ok().body(newUser);
     }
+
+    @GetMapping("/get-user/{userId}")
+    public ResponseEntity<User> getUserByUserId(@PathVariable("userId") UUID userId) {
+        User getUser = userService.getUserByUserId(userId);
+        return ResponseEntity.ok().body(getUser);
+    }
+
+
+
 
     private boolean validateUserDto(UserDto userDto) {
         if (userDto == null || userDto.getUserName() == null) {
