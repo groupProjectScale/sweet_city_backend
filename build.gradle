@@ -17,15 +17,15 @@ allprojects {
     }
 
     dependencies {
-        implementation libs.springbootStarter
-        implementation libs.springWeb
-        implementation libs.springbootStarterWeb
-        implementation libs.springbootStarterActuator
-        implementation libs.springbootStarterValidation
-        implementation libs.jacksonDatabind
-        implementation libs.HikariCP
-        implementation libs.jdbi
-        implementation libs.awsS3
+        implementation(libs.springbootStarter)
+        implementation(libs.springWeb)
+        implementation(libs.springbootStarterWeb)
+        implementation(libs.springbootStarterActuator)
+        implementation(libs.springbootStarterValidation)
+        implementation(libs.jacksonDatabind)
+        implementation(libs.HikariCP)
+        implementation(libs.jdbi)
+        implementation(libs.awsS3)
         implementation(libs.awsSqs)
         implementation platform(libsPlatform.awssdkBom)
         runtimeOnly(libsRuntimeOnly.postgresql)
@@ -55,9 +55,4 @@ allprojects {
             formatAnnotations()
         }
     }
-
-    /*task("hello").doLast {
-        println("i'm $project.name")
-    }*/
-
 }
