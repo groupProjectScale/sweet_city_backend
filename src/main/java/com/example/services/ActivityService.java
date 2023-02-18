@@ -1,4 +1,6 @@
 package com.example.services;
 
-public class ActivityService {
-}
+import org.springframework.stereotype.Service;
+
+@Service
+public class ActivityService {}

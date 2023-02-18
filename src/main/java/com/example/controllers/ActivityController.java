@@ -1,4 +1,6 @@
 package com.example.controllers;
 
-public class ActivityController {
-}
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class ActivityController {}
