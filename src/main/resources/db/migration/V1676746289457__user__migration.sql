@@ -1,3 +1,4 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS client (
         user_id UUID NOT NULL DEFAULT uuid_generate_v4(),
         username VARCHAR(255) NOT NULL UNIQUE,

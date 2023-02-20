@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id "com.diffplug.spotless" version "6.11.0"
+    id "org.flywaydb.flyway" version "9.8.1"
 }
 
 allprojects {
@@ -54,5 +55,11 @@ allprojects {
             // fix formatting of type annotations
             formatAnnotations()
         }
+    }
+
+    flyway {
+        url = "jdbc:postgresql://localhost:5432/sweetcity_PSQL"
+        user = "postgres"
+        password = "postgres"
     }
 }
