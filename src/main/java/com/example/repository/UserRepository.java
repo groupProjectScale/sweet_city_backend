@@ -2,12 +2,11 @@ package com.example.repository;
 
 import com.example.model.User;
 import com.example.repository.mappers.UserMapper;
+import java.util.Optional;
+import java.util.UUID;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public class UserRepository {
@@ -22,8 +21,7 @@ public class UserRepository {
     private final String INSERT_CLIENT_SQL =
             "INSERT INTO CLIENT (username, firstname, lastname, email, password) "
                     + "VALUES (:username, :firstname, :lastname, :email, :password);";
-    private final String FIND_USER_BY_ID = "SELECT * FROM client WHERE user_id = :userId;" ;
-
+    private final String FIND_USER_BY_ID = "SELECT * FROM client WHERE user_id = :userId;";
 
     public User addUser(User user) {
         try (Handle handle = jdbi.open()) {
@@ -46,10 +44,11 @@ public class UserRepository {
 
     public User getUserByUserId(UUID userId) {
         try (Handle handle = jdbi.open()) {
-            Optional<User> result = handle.select(FIND_USER_BY_ID)
-                    .bind("userId", userId)
-                    .map(new UserMapper())
-                    .findOne();
+            Optional<User> result =
+                    handle.select(FIND_USER_BY_ID)
+                            .bind("userId", userId)
+                            .map(new UserMapper())
+                            .findOne();
 
             return result.isPresent() ? result.get() : null;
         } catch (Exception e) {

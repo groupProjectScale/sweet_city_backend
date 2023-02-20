@@ -7,7 +7,7 @@ import java.util.UUID;
 public class Activity {
     private UUID activityId;
     private String name;
-    private UUID creatorId; //linked back to client table
+    private UUID creatorId; // linked back to client table
     private long startTime;
     private long endTime;
     private UUID locationId;
@@ -16,7 +16,6 @@ public class Activity {
     private Integer minimumParticipants;
     private Integer maximumParticipants;
     private final Map<UUID, User> attendees = new HashMap<>();
-
 
     public static final class Builder {
         private UUID activityId;
@@ -107,6 +106,7 @@ public class Activity {
     public void addAttendee(User user) {
         this.attendees.put(user.getUserId(), user);
     }
+
     public void removeAttendee(User user) {
         this.attendees.remove(user.getUserId());
     }
@@ -127,7 +127,9 @@ public class Activity {
         this.name = name;
     }
 
-    public UUID getCreatorId() { return creatorId;}
+    public UUID getCreatorId() {
+        return creatorId;
+    }
 
     public void setCreatorId(UUID creatorId) {
         this.creatorId = creatorId;
@@ -188,6 +190,8 @@ public class Activity {
     public void setMaximumParticipants(Integer maximumParticipants) {
         this.maximumParticipants = maximumParticipants;
     }
-    public Map<UUID, User> getAttendees() { return attendees; }
 
+    public Map<UUID, User> getAttendees() {
+        return attendees;
+    }
 }

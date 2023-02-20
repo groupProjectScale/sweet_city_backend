@@ -3,10 +3,9 @@ package com.example.controllers;
 import com.example.dto.UserDto;
 import com.example.model.User;
 import com.example.services.UserService;
+import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 public class UserController {
@@ -31,9 +30,6 @@ public class UserController {
         User getUser = userService.getUserByUserId(userId);
         return ResponseEntity.ok().body(getUser);
     }
-
-
-
 
     private boolean validateUserDto(UserDto userDto) {
         if (userDto == null || userDto.getUserName() == null) {

@@ -2,9 +2,8 @@ package com.example.services;
 
 import com.example.model.User;
 import com.example.repository.UserRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.UUID;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
