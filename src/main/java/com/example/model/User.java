@@ -1,14 +1,25 @@
 package com.example.model;
 
 import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "Client")
 public class User {
+    @Id
+    @GeneratedValue(generator = "UUID")
     private UUID userId;
+
     private String userName;
     private String firstName;
     private String lastName;
     private String email;
     private String hashPasswordWithSalt; // hashed with salt
+
+    public User() {}
 
     public static final class Builder {
         private UUID userId;

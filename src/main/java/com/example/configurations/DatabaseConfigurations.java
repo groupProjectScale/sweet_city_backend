@@ -3,7 +3,7 @@ package com.example.configurations;
 import com.example.configurations.properties.DatabaseProperties;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.jdbi.v3.core.Jdbi;
+import javax.sql.DataSource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,9 +34,7 @@ public class DatabaseConfigurations {
     }
 
     @Bean
-    public Jdbi jdbi() {
-        Jdbi conn = Jdbi.create(new HikariDataSource(getHikariConfig()));
-        conn.registerArrayType(String.class, "varchar");
-        return conn;
+    public DataSource dataSource() {
+        return new HikariDataSource(getHikariConfig());
     }
 }
