@@ -9,6 +9,7 @@ ext.libs = [
         'jdbi': 'org.jdbi:jdbi3-core:3.31.0',
         'awsS3':'software.amazon.awssdk:s3',
         'awsSqs': 'software.amazon.awssdk:sqs',
+        'jpa': 'org.springframework.data:spring-data-jpa:2.7.2'
 ]
 
 ext.libsPlatform = [
