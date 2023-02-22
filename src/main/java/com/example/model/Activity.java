@@ -1,64 +1,56 @@
 package com.example.model;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 /** {@summary This is valid java doc.} */
 @Entity
+@Table(name="activity")
 public class Activity {
+
     @OneToMany private final Set<Tag> tags = new HashSet<>();
 
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @Column(name = "activity_id", updatable = false, nullable = false)
+    private UUID activityId;
+
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "user_id")
     private UUID creatorId; // linked back to client table
 
-    private long startTime;
+    @Column(name = "start_time")
+    private Timestamp startTime;
 
-    private long endTime;
+    @Column(name = "end_time")
+    private Timestamp endTime;
 
+    @Column(name = "location_id", nullable = true)
     private UUID locationId;
 
+    @Column(name = "price", nullable = true)
     private double price;
 
+    @Column(name = "current_participants", nullable = true)
     private Integer currentParticipants;
 
+    @Column(name = "minimum_participants", nullable = true)
     private Integer minimumParticipants;
 
+    @Column(name = "maximum_participants", nullable = true)
     private Integer maximumParticipants;
 
     @OneToMany private final Set<Requirement> requirements = new HashSet<>();
 
     @OneToMany private final Set<User> attendees = new HashSet<>();
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    private UUID activityId;
 
     public Activity() {}
-
-    /**
-     * Instantiates a new Activity.
-     *
-     * @param builder the builder
-     */
-    public Activity(Builder builder) {
-
-        setActivityId(builder.activityId);
-        setName(builder.name);
-        setCreatorId(builder.creatorId);
-        setStartTime(builder.startTime);
-        setEndTime(builder.endTime);
-        setLocationId(builder.locationId);
-        setPrice(builder.price);
-        setCurrentParticipants(builder.currentParticipants);
-        setMaximumParticipants(builder.maximumParticipants);
-        setMinimumParticipants(builder.minimumParticipants);
-    }
 
     /**
      * Add attendee.
@@ -146,7 +138,7 @@ public class Activity {
      *
      * @return the start time
      */
-    public long getStartTime() {
+    public Timestamp getStartTime() {
         return startTime;
     }
 
@@ -155,7 +147,7 @@ public class Activity {
      *
      * @param startTime the start time
      */
-    public void setStartTime(long startTime) {
+    public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }
 
@@ -164,7 +156,7 @@ public class Activity {
      *
      * @return the end time
      */
-    public long getEndTime() {
+    public Timestamp getEndTime() {
         return endTime;
     }
 
@@ -173,7 +165,7 @@ public class Activity {
      *
      * @param endTime the end time
      */
-    public void setEndTime(long endTime) {
+    public void setEndTime(Timestamp endTime) {
         this.endTime = endTime;
     }
 
@@ -283,186 +275,5 @@ public class Activity {
      */
     public Set<Requirement> getRequirements() {
         return requirements;
-    }
-
-    /** this is a Builder. */
-    public static final class Builder {
-        /** The Activity id. */
-        private UUID activityId;
-        /** The Name. */
-        private String name;
-        /** The Creator id. */
-        private UUID creatorId;
-        /** The Start time. */
-        private long startTime;
-        /** The End time. */
-        private long endTime;
-        /** The Location id. */
-        private UUID locationId;
-        /** The Price. */
-        private double price;
-        /** The Current participants. */
-        private Integer currentParticipants;
-        /** The Minimum participants. */
-        private Integer minimumParticipants;
-        /** The Maximum participants. */
-        private Integer maximumParticipants;
-        /** The Tags. */
-        private HashSet<Tag> tags;
-        /** The Requirements. */
-        private HashSet<Requirement> requirements;
-
-        /** Instantiates a new Builder. */
-        private Builder() {}
-
-        /**
-         * New builder builder.
-         *
-         * @return the builder
-         */
-        public static Builder newBuilder() {
-            return new Builder();
-        }
-
-        /**
-         * With activity id builder.
-         *
-         * @param val the val
-         * @return the builder
-         */
-        public Builder withActivityId(UUID val) {
-            activityId = val;
-            return this;
-        }
-
-        /**
-         * With name builder.
-         *
-         * @param val the val
-         * @return the builder
-         */
-        public Builder withName(String val) {
-            name = val;
-            return this;
-        }
-
-        /**
-         * With creator id builder.
-         *
-         * @param val the val
-         * @return the builder
-         */
-        public Builder withCreatorId(UUID val) {
-            creatorId = val;
-            return this;
-        }
-
-        /**
-         * With start time builder.
-         *
-         * @param val the val
-         * @return the builder
-         */
-        public Builder withStartTime(long val) {
-            startTime = val;
-            return this;
-        }
-
-        /**
-         * With end time builder.
-         *
-         * @param val the val
-         * @return the builder
-         */
-        public Builder withEndTime(long val) {
-            endTime = val;
-            return this;
-        }
-
-        /**
-         * With location id builder.
-         *
-         * @param val the val
-         * @return the builder
-         */
-        public Builder withLocationId(UUID val) {
-            locationId = val;
-            return this;
-        }
-
-        /**
-         * With price builder.
-         *
-         * @param val the val
-         * @return the builder
-         */
-        public Builder withPrice(double val) {
-            price = val;
-            return this;
-        }
-
-        /**
-         * With current participants builder.
-         *
-         * @param val the val
-         * @return the builder
-         */
-        public Builder withCurrentParticipants(int val) {
-            currentParticipants = val;
-            return this;
-        }
-
-        /**
-         * With minimum participants builder.
-         *
-         * @param val the val
-         * @return the builder
-         */
-        public Builder withMinimumParticipants(int val) {
-            minimumParticipants = val;
-            return this;
-        }
-
-        /**
-         * With maximum participants builder.
-         *
-         * @param val the val
-         * @return the builder
-         */
-        public Builder withMaximumParticipants(int val) {
-            maximumParticipants = val;
-            return this;
-        }
-
-        /**
-         * With tags builder.
-         *
-         * @param val the val
-         * @return the builder
-         */
-        public Builder withTags(HashSet<Tag> val) {
-            tags = val;
-            return this;
-        }
-
-        /**
-         * With requirements builder.
-         *
-         * @param val the val
-         * @return the builder
-         */
-        public Builder withRequirements(HashSet<Requirement> val) {
-            requirements = val;
-            return this;
-        }
-
-        /**
-         * Build activity.
-         *
-         * @return the activity
-         */
-        public Activity build() {
-            return new Activity(this);
-        }
     }
 }
