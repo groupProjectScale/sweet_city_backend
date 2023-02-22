@@ -4,14 +4,21 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 
 /** {@summary This is valid java doc.} */
 @Entity
-@Table(name="activity")
+@Table(name = "activity")
 public class Activity {
 
-    @OneToMany private final Set<Tag> tags = new HashSet<>();
+    @OneToMany
+    private final Set<Tag> tags = new HashSet<>();
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -48,7 +55,6 @@ public class Activity {
     @OneToMany private final Set<Requirement> requirements = new HashSet<>();
 
     @OneToMany private final Set<User> attendees = new HashSet<>();
-
 
     public Activity() {}
 

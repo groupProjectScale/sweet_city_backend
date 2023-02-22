@@ -3,12 +3,17 @@ package com.example.controllers;
 import com.example.dto.ActivityDto;
 import com.example.model.Activity;
 import com.example.services.ActivityService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 
 /** The type Activity controller. */
 @RestController
@@ -19,6 +24,7 @@ public class ActivityController {
 
     /**
      * Instantiates a new Activity Controller.
+     *
      * @param activityService activity service
      */
     public ActivityController(ActivityService activityService) {
@@ -27,6 +33,7 @@ public class ActivityController {
 
     /**
      * Gets activity by activity id.
+     *
      * @param activityId the activity id
      * @return the user by user id
      */
@@ -37,7 +44,8 @@ public class ActivityController {
     }
 
     /**
-     * Find all activity
+     * Find all activity.
+     *
      * @return all activities
      */
     @GetMapping("/get-all")
@@ -47,7 +55,8 @@ public class ActivityController {
     }
 
     /**
-     * Create new activity
+     * Create new activity.
+     *
      * @param activityDto the activity dto
      * @return the activity
      */

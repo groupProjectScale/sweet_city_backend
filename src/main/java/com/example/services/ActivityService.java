@@ -3,14 +3,13 @@ package com.example.services;
 import com.example.dto.ActivityDto;
 import com.example.model.Activity;
 import com.example.repository.ActivityRepository;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
 
+/** The type Activity service. */
 @Service
 public class ActivityService {
 
@@ -18,7 +17,8 @@ public class ActivityService {
     private ActivityRepository activityRepository;
 
     /**
-     * Initialize ActivityService
+     * Initialize ActivityService.
+     *
      * @param activityRepository the activity repository
      */
     public ActivityService(ActivityRepository activityRepository) {
@@ -27,6 +27,7 @@ public class ActivityService {
 
     /**
      * Gets activity by activity id.
+     *
      * @param activityId activity id
      * @return activity by activity id
      */
@@ -35,9 +36,9 @@ public class ActivityService {
         return activity;
     }
 
-
     /**
-     * Find all activity
+     * Find all activity.
+     *
      * @return all activity
      */
     public List<Activity> getAllActivity() {
@@ -45,10 +46,9 @@ public class ActivityService {
         return lst;
     }
 
-
-
     /**
-     * Create new activity TODO
+     * Create new activity TODO.
+     *
      * @param activityDto activityDto
      * @return activity
      */
@@ -57,18 +57,19 @@ public class ActivityService {
             return null;
         }
         Activity a = new Activity();
-        BeanUtils.copyProperties(activityDto,a);
+        BeanUtils.copyProperties(activityDto, a);
         a.setActivityId(UUID.randomUUID()); // Not Sure
         return activityRepository.save(a);
     }
 
     /**
-     * validate activity TODO
+     * validate activity TODO.
+     *
      * @param activityDto activityDto
      * @return Whether activity is valid
      */
     public boolean validateActivity(ActivityDto activityDto) {
-        //TO DO
+        // TO DO
         return true;
     }
 }

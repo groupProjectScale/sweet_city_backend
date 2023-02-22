@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/** {@summary This is valid java doc.} */
 @Entity
 @Table(name = "Client")
 public class User {

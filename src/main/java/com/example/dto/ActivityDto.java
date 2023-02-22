@@ -1,8 +1,6 @@
 package com.example.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.UUID;
 
