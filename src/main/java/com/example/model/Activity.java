@@ -11,14 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
 /** {@summary This is valid java doc.} */
 @Entity
 @Table(name = "activity")
 public class Activity {
 
-    @OneToMany
-    private final Set<Tag> tags = new HashSet<>();
+    @OneToMany private final Set<Tag> tags = new HashSet<>();
 
     @Id
     @GeneratedValue(generator = "UUID")
