@@ -58,7 +58,6 @@ public class ActivityService {
         }
         Activity a = new Activity();
         BeanUtils.copyProperties(activityDto, a);
-        a.setActivityId(UUID.randomUUID()); // Not Sure
         return activityRepository.save(a);
     }
 
