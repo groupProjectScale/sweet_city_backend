@@ -56,18 +56,18 @@ CREATE TABLE IF NOT EXISTS activity_requirement (
 );
 
 CREATE TABLE IF NOT EXISTS address(
-  address_id UUID NOT NULL DEFAULT uuid_generate_v4(),
-/*point_id SERIAL PRIMARY KEY,*/
+/*  point_id UUID NOT NULL DEFAULT uuid_generate_v4(),
+*/  point_id SERIAL PRIMARY KEY,
   user_id UUID NOT NULL,
   location VARCHAR(255) NOT NULL,
   longitude numeric NOT NULL,
   latitude numeric NOT NULL,
-  geo geometry(POINT),
-  PRIMARY KEY (address_id)
+  geo geometry(POINT)
 );
 
 
 -- INSERT INTO activity (name, user_id, start_time, end_time) VALUES ('hiking', uuid_generate_v4(), current_timestamp + interval '3' day, current_timestamp + interval '4' day);
 -- INSERT INTO address(location, longitude, latitude, geo) VALUES ('Seattle',47.608013,-122.335167,ST_Point(47.608013, -122.335167));
 INSERT INTO activity (activity_id, price, name, user_id, start_time, end_time) VALUES (uuid_generate_v4(), 0, 'hiking', uuid_generate_v4(), current_timestamp + interval '3' day, current_timestamp + interval '4' day);
+UPDATE address SET geo = ST_Point(longitude, latitude);
 

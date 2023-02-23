@@ -2,9 +2,13 @@ package com.example.controllers;
 
 import com.example.dto.AddressDto;
 import com.example.dto.UserDto;
+import com.example.model.Address;
 import com.example.model.User;
+import com.example.services.AddressService;
 import com.example.services.UserService;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,56 +16,53 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-/** The type User controller. */
 @RestController
 public class UserController {
-    /** The User service. */
     private UserService userService;
+    private AddressService addressService;
 
-    /**
-     * Instantiates a new User controller.
-     *
-     * @param userService the user service
-     */
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AddressService addressService) {
         this.userService = userService;
+        this.addressService = addressService;
     }
 
-    /**
-     * Add user response entity.
-     *
-     * @param userTask the requestBody.
-     * @return the response entity
-     */
     @PostMapping("/add-user")
-    public ResponseEntity<User> addUser(@RequestBody UserTask userTask) {
+    public ResponseEntity<Address> addUser(@RequestBody UserTask userTask)
+            throws ExecutionException, InterruptedException {
         if (validateUserDto(userTask.userDto) == false) {
             return ResponseEntity.badRequest().body(null);
         }
-        User user = toUser(userTask.userDto);
-        User newUser = userService.addUser(user);
 
-        return ResponseEntity.ok().body(newUser);
+        if (validateAddressDto(userTask.addressDto) == false) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        CompletableFuture<User> completableFuture =
+                CompletableFuture.supplyAsync(() -> {
+                    User user = toUser(userTask.userDto);
+                    return userService.addUser(user);
+                });
+        CompletableFuture<Address> future =
+                completableFuture.thenApply(
+                        (newUser) -> {
+                            Address address = toAddress(userTask.addressDto);
+                            address.setUserId(newUser.getUserId());
+                            return addressService.save(address);
+                        });
+        return ResponseEntity.ok().body(future.get());
     }
 
-    /**
-     * Gets user by user id.
-     *
-     * @param userId the user id
-     * @return the user by user id
-     */
     @GetMapping("/get-user/{userId}")
     public ResponseEntity<User> getUserByUserId(@PathVariable("userId") UUID userId) {
         User getUser = userService.getUserByUserId(userId);
         return ResponseEntity.ok().body(getUser);
     }
 
-    /**
-     * Validate user dto boolean.
-     *
-     * @param userDto the user dto
-     * @return the boolean
-     */
+    private boolean validateAddressDto(AddressDto addressDto) {
+        // To do
+        return false;
+    }
+
     private boolean validateUserDto(UserDto userDto) {
         if (userDto == null || userDto.getUserName() == null) {
             return false;
@@ -72,12 +73,6 @@ public class UserController {
         return true;
     }
 
-    /**
-     * To user user.
-     *
-     * @param userDto the user dto
-     * @return the user
-     */
     private User toUser(UserDto userDto) {
         return User.Builder.newBuilder()
                 .withUserName(userDto.getUserName())
@@ -88,11 +83,17 @@ public class UserController {
                 .build();
     }
 
-    /** The type User task. */
-    public class UserTask {
-        /** The User dto. */
+    private Address toAddress(AddressDto addressDto) {
+        Address address = new Address();
+        address.setUserId(addressDto.getUserId());
+        address.setLocation(addressDto.getLocation());
+        address.setLatitude(addressDto.getLatitude());
+        address.setLongitude(addressDto.getLongitude());
+        return address;
+    }
+
+    public static class UserTask {
         public UserDto userDto;
-        /** The Address dto. */
         public AddressDto addressDto;
     }
 }
