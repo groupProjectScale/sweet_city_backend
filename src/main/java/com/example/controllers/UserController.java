@@ -38,10 +38,11 @@ public class UserController {
         }
 
         CompletableFuture<User> completableFuture =
-                CompletableFuture.supplyAsync(() -> {
-                    User user = toUser(userTask.userDto);
-                    return userService.addUser(user);
-                });
+                CompletableFuture.supplyAsync(
+                        () -> {
+                            User user = toUser(userTask.userDto);
+                            return userService.addUser(user);
+                        });
         CompletableFuture<Address> future =
                 completableFuture.thenApply(
                         (newUser) -> {
