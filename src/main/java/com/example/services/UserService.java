@@ -1,42 +1,39 @@
 package com.example.services;
 
+import com.example.model.Address;
 import com.example.model.User;
+import com.example.repository.AddressRepository;
 import com.example.repository.UserRepository;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import org.springframework.stereotype.Service;
 
-/** The type User service. */
 @Service
 public class UserService {
-    /** The User repository. */
     private final UserRepository userRepository;
+    private final AddressRepository addressRepository;
 
-    /**
-     * Instantiates a new User service.
-     *
-     * @param userRepository the user repository
-     */
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, AddressRepository addressRepository) {
         this.userRepository = userRepository;
+        this.addressRepository = addressRepository;
     }
 
-    /**
-     * Add user user.
-     *
-     * @param user the user
-     * @return the user
-     */
-    public User addUser(User user) {
-        return userRepository.save(user);
+    public User addUserWithAddress(User user, Address address)
+            throws ExecutionException, InterruptedException {
+        CompletableFuture<User> completableFuture =
+                CompletableFuture.supplyAsync(() -> userRepository.save(user));
+        CompletableFuture<Address> future =
+                completableFuture.thenApply(
+                        (newUser) -> {
+                            address.setUserId(newUser.getUserId());
+                            return addressRepository.save(address);
+                        });
+        Address address1 = future.get();
+        return getUserByUserId(address1.getUserId());
     }
 
-    /**
-     * Gets user by user id.
-     *
-     * @param userId the user id
-     * @return the user by user id
-     */
     public User getUserByUserId(UUID userId) {
         Optional user = userRepository.findById(userId);
         if (user.isPresent()) {

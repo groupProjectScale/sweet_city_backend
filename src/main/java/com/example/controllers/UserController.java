@@ -4,10 +4,8 @@ import com.example.dto.AddressDto;
 import com.example.dto.UserDto;
 import com.example.model.Address;
 import com.example.model.User;
-import com.example.services.AddressService;
 import com.example.services.UserService;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,15 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
     private UserService userService;
-    private AddressService addressService;
 
-    public UserController(UserService userService, AddressService addressService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.addressService = addressService;
     }
 
     @PostMapping("/add-user")
-    public ResponseEntity<Address> addUser(@RequestBody UserTask userTask)
+    public ResponseEntity<User> addUser(@RequestBody UserTask userTask)
             throws ExecutionException, InterruptedException {
         if (validateUserDto(userTask.userDto) == false) {
             return ResponseEntity.badRequest().body(null);
@@ -36,21 +32,11 @@ public class UserController {
         if (validateAddressDto(userTask.addressDto) == false) {
             return ResponseEntity.badRequest().body(null);
         }
+        User user = toUser(userTask.userDto);
+        Address address = toAddress(userTask.addressDto);
 
-        CompletableFuture<User> completableFuture =
-                CompletableFuture.supplyAsync(
-                        () -> {
-                            User user = toUser(userTask.userDto);
-                            return userService.addUser(user);
-                        });
-        CompletableFuture<Address> future =
-                completableFuture.thenApply(
-                        (newUser) -> {
-                            Address address = toAddress(userTask.addressDto);
-                            address.setUserId(newUser.getUserId());
-                            return addressService.save(address);
-                        });
-        return ResponseEntity.ok().body(future.get());
+        User newUser = userService.addUserWithAddress(user, address);
+        return ResponseEntity.ok().body(newUser);
     }
 
     @GetMapping("/get-user/{userId}")
@@ -61,7 +47,7 @@ public class UserController {
 
     private boolean validateAddressDto(AddressDto addressDto) {
         // To do
-        return false;
+        return true;
     }
 
     private boolean validateUserDto(UserDto userDto) {
@@ -86,7 +72,7 @@ public class UserController {
 
     private Address toAddress(AddressDto addressDto) {
         Address address = new Address();
-        address.setUserId(addressDto.getUserId());
+        // address.setUserId(addressDto.getUserId());
         address.setLocation(addressDto.getLocation());
         address.setLatitude(addressDto.getLatitude());
         address.setLongitude(addressDto.getLongitude());
