@@ -8,7 +8,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 /** {@summary This is valid java doc.} */
@@ -16,7 +18,12 @@ import javax.persistence.Table;
 @Table(name = "activity")
 public class Activity {
 
-    @OneToMany private final Set<Tag> tags = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "activity_tag",
+            joinColumns = @JoinColumn(name = "activity_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private final Set<Tag> tags = new HashSet<>();
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -41,8 +48,8 @@ public class Activity {
     @Column(name = "price", nullable = true)
     private double price;
 
-    @Column(name = "current_participants", nullable = true)
-    private Integer currentParticipants;
+    @Column(name = "current_participants", nullable = true, columnDefinition = "integer default 1")
+    private Integer currentParticipants = 1;
 
     @Column(name = "minimum_participants", nullable = true)
     private Integer minimumParticipants;
@@ -50,9 +57,19 @@ public class Activity {
     @Column(name = "maximum_participants", nullable = true)
     private Integer maximumParticipants;
 
-    @OneToMany private final Set<Requirement> requirements = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "activity_requirement",
+            joinColumns = @JoinColumn(name = "activity_id"),
+            inverseJoinColumns = @JoinColumn(name = "requirement_id"))
+    private final Set<Requirement> requirements = new HashSet<>();
 
-    @OneToMany private final Set<User> attendees = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "activity_attendee",
+            joinColumns = @JoinColumn(name = "activity_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private final Set<User> attendees = new HashSet<>();
 
     public Activity() {}
 

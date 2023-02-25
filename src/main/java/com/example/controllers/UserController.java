@@ -61,13 +61,13 @@ public class UserController {
     }
 
     private User toUser(UserDto userDto) {
-        return User.Builder.newBuilder()
-                .withUserName(userDto.getUserName())
-                .withFirstName(userDto.getFirstName())
-                .withLastName(userDto.getLastName())
-                .withEmail(userDto.getEmail())
-                .withHashPasswordWithSalt(userDto.getPassword())
-                .build();
+        User user = new User();
+        user.setUserName(userDto.getUserName());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setHashPasswordWithSalt(userDto.getPassword());
+        user.setEmail(userDto.getEmail());
+        return user;
     }
 
     private Address toAddress(AddressDto addressDto) {

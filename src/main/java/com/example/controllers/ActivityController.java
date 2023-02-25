@@ -1,6 +1,7 @@
 package com.example.controllers;
 
 import com.example.dto.ActivityDto;
+import com.example.dto.UserDto;
 import com.example.model.Activity;
 import com.example.services.ActivityService;
 import java.util.List;
@@ -40,5 +41,21 @@ public class ActivityController {
     public ResponseEntity<Activity> createActivity(@RequestBody ActivityDto activityDto) {
         Activity activity = activityService.addActivity(activityDto);
         return ResponseEntity.ok(activity);
+    }
+
+    @GetMapping("/get/{activityId}/current-participant")
+    public ResponseEntity<Integer> getCurrentParticipant(@PathVariable UUID activityId) {
+        int currentParticipant = activityService.getCurrentParticipant(activityId);
+        if (currentParticipant == -1) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        return ResponseEntity.ok(currentParticipant);
+    }
+
+    @GetMapping("/get/ranking")
+    public ResponseEntity<List<Activity>> getActivityRanking(@RequestBody UserDto userDto) {
+        // To do
+        List<Activity> activities = activityService.getActivityRanking(userDto.getUserName());
+        return ResponseEntity.ok().body(activities);
     }
 }

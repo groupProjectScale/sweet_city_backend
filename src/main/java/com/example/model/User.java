@@ -1,17 +1,21 @@
 package com.example.model;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-/** {@summary This is valid java doc.} */
 @Entity
 @Table(name = "Client")
 public class User {
     @Id
     @GeneratedValue(generator = "UUID")
+    @Column(updatable = false)
     private UUID userId;
 
     private String userName;
@@ -20,65 +24,10 @@ public class User {
     private String email;
     private String hashPasswordWithSalt; // hashed with salt
 
+    @ManyToMany(mappedBy = "attendees")
+    private Set<Activity> activities = new HashSet<>();
+
     public User() {}
-
-    public static final class Builder {
-        private UUID userId;
-        private String userName;
-        private String firstName;
-        private String lastName;
-        private String email;
-        private String hashPasswordWithSalt;
-
-        public Builder() {}
-
-        public static Builder newBuilder() {
-            return new Builder();
-        }
-
-        public Builder withUserId(UUID val) {
-            userId = val;
-            return this;
-        }
-
-        public Builder withUserName(String val) {
-            userName = val;
-            return this;
-        }
-
-        public Builder withFirstName(String val) {
-            firstName = val;
-            return this;
-        }
-
-        public Builder withLastName(String val) {
-            lastName = val;
-            return this;
-        }
-
-        public Builder withEmail(String val) {
-            email = val;
-            return this;
-        }
-
-        public Builder withHashPasswordWithSalt(String val) {
-            hashPasswordWithSalt = val;
-            return this;
-        }
-
-        public User build() {
-            return new User(this);
-        }
-    }
-
-    public User(Builder builder) {
-        setUserId(builder.userId);
-        setUserName(builder.userName);
-        setFirstName(builder.firstName);
-        setLastName(builder.lastName);
-        setEmail(builder.email);
-        setHashPasswordWithSalt(builder.hashPasswordWithSalt);
-    }
 
     public UUID getUserId() {
         return userId;
@@ -126,5 +75,13 @@ public class User {
 
     public void setHashPasswordWithSalt(String password) {
         this.hashPasswordWithSalt = password;
+    }
+
+    public Set<Activity> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(Set<Activity> activities) {
+        this.activities = activities;
     }
 }
