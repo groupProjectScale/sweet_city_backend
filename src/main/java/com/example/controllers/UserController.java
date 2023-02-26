@@ -2,6 +2,7 @@ package com.example.controllers;
 
 import com.example.dto.AddressDto;
 import com.example.dto.UserDto;
+import com.example.dto.UserTaskDto;
 import com.example.model.Address;
 import com.example.model.User;
 import com.example.services.UserService;
@@ -17,27 +18,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {
-    private UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @PostMapping("/add-user")
-    public ResponseEntity<User> addUser(@RequestBody UserTask userTask)
+    public ResponseEntity<User> addUser(@RequestBody UserTaskDto userTaskDto)
             throws ExecutionException, InterruptedException {
-        if (validateUserDto(userTask.userDto) == false) {
+        if (validateUserDto(userTaskDto.getUserDto()) == false) {
             return ResponseEntity.badRequest().body(null);
         }
 
-        if (validateAddressDto(userTask.addressDto) == false) {
+        if (validateAddressDto(userTaskDto.getAddressDto()) == false) {
             return ResponseEntity.badRequest().body(null);
         }
 
         User user = new User();
-        BeanUtils.copyProperties(userTask.userDto, user);
+        BeanUtils.copyProperties(userTaskDto.getUserDto(), user);
         Address address = new Address();
-        BeanUtils.copyProperties(userTask.addressDto, address);
+        BeanUtils.copyProperties(userTaskDto.getAddressDto(), address);
 
         User newUser = userService.addUserWithAddress(user, address);
         return ResponseEntity.ok().body(newUser);
@@ -62,10 +63,5 @@ public class UserController {
             return false;
         }
         return true;
-    }
-
-    public static class UserTask {
-        public UserDto userDto;
-        public AddressDto addressDto;
     }
 }
