@@ -4,7 +4,6 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -12,9 +11,9 @@ import javax.persistence.Table;
 @Table(name = "address")
 public class Address {
     @Id
-    @Column(name = "point_id", updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer addressId;
+    @GeneratedValue(generator = "UUID")
+    @Column(updatable = false)
+    private UUID addressId;
 
     @Column(updatable = false)
     private UUID userId;
@@ -25,11 +24,11 @@ public class Address {
 
     public Address() {}
 
-    public Integer getAddressId() {
+    public UUID getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(Integer addressId) {
+    public void setAddressId(UUID addressId) {
         this.addressId = addressId;
     }
 

@@ -7,6 +7,7 @@ import com.example.model.User;
 import com.example.services.UserService;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,8 +33,11 @@ public class UserController {
         if (validateAddressDto(userTask.addressDto) == false) {
             return ResponseEntity.badRequest().body(null);
         }
-        User user = toUser(userTask.userDto);
-        Address address = toAddress(userTask.addressDto);
+
+        User user = new User();
+        BeanUtils.copyProperties(userTask.userDto, user);
+        Address address = new Address();
+        BeanUtils.copyProperties(userTask.addressDto, address);
 
         User newUser = userService.addUserWithAddress(user, address);
         return ResponseEntity.ok().body(newUser);
@@ -58,25 +62,6 @@ public class UserController {
             return false;
         }
         return true;
-    }
-
-    private User toUser(UserDto userDto) {
-        User user = new User();
-        user.setUserName(userDto.getUserName());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setHashPasswordWithSalt(userDto.getPassword());
-        user.setEmail(userDto.getEmail());
-        return user;
-    }
-
-    private Address toAddress(AddressDto addressDto) {
-        Address address = new Address();
-        // address.setUserId(addressDto.getUserId());
-        address.setLocation(addressDto.getLocation());
-        address.setLatitude(addressDto.getLatitude());
-        address.setLongitude(addressDto.getLongitude());
-        return address;
     }
 
     public static class UserTask {

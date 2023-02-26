@@ -56,13 +56,14 @@ CREATE TABLE IF NOT EXISTS activity_requirement (
 );
 
 CREATE TABLE IF NOT EXISTS address(
-/*  point_id UUID NOT NULL DEFAULT uuid_generate_v4(),
-*/  point_id SERIAL PRIMARY KEY,
-  user_id UUID NOT NULL,
-  location VARCHAR(255) NOT NULL,
-  longitude numeric NOT NULL,
-  latitude numeric NOT NULL,
-  geo geometry(POINT)
+    address_id UUID NOT NULL DEFAULT uuid_generate_v4(),
+/*point_id SERIAL PRIMARY KEY, */
+    user_id UUID NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    longitude numeric NOT NULL,
+    latitude numeric NOT NULL,
+    geo geometry(POINT),
+    PRIMARY KEY (address_id)
 );
 
 

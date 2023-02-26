@@ -24,14 +24,10 @@ public class UserService {
             throws ExecutionException, InterruptedException {
         CompletableFuture<User> completableFuture =
                 CompletableFuture.supplyAsync(() -> userRepository.save(user));
-        CompletableFuture<Address> future =
-                completableFuture.thenApply(
-                        (newUser) -> {
-                            address.setUserId(newUser.getUserId());
-                            return addressRepository.save(address);
-                        });
-        Address address1 = future.get();
-        return getUserByUserId(address1.getUserId());
+
+        address.setUserId(completableFuture.get().getUserId());
+        Address savedAddress = addressRepository.save(address);
+        return getUserByUserId(savedAddress.getUserId());
     }
 
     public User getUserByUserId(UUID userId) {
