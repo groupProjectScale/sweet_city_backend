@@ -8,44 +8,33 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "address")
-public class Address {
+@Table(name = "location")
+public class Location {
     @Id
     @GeneratedValue(generator = "UUID")
     @Column(updatable = false)
-    private UUID addressId;
+    private UUID locationId;
 
-    @Column(updatable = false)
-    private UUID userId;
-
-    private String location;
+    private String name;
     private double longitude;
     private double latitude;
 
-    public Address() {}
+    public Location() {}
 
-    public UUID getAddressId() {
-        return addressId;
+    public UUID getLocationId() {
+        return locationId;
     }
 
-    public void setAddressId(UUID addressId) {
-        this.addressId = addressId;
+    public void setLocationId(UUID locationId) {
+        this.locationId = locationId;
     }
 
-    public UUID getUserId() {
-        return userId;
+    public String getName() {
+        return name;
     }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getLongitude() {

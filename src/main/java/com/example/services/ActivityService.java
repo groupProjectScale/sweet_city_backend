@@ -2,56 +2,43 @@ package com.example.services;
 
 import com.example.dto.ActivityDto;
 import com.example.model.Activity;
+import com.example.model.Address;
+import com.example.model.User;
 import com.example.repository.ActivityRepository;
+import com.example.repository.AddressRepository;
+import com.example.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-/** The type Activity service. */
 @Service
 public class ActivityService {
 
-    /** The Activity repository. */
-    private ActivityRepository activityRepository;
+    private final ActivityRepository activityRepository;
+    private final UserRepository userRepository;
+    private final AddressRepository addressRepository;
 
-    /**
-     * Initialize ActivityService.
-     *
-     * @param activityRepository the activity repository
-     */
-    public ActivityService(ActivityRepository activityRepository) {
+    public ActivityService(
+            ActivityRepository activityRepository,
+            UserRepository userRepository,
+            AddressRepository addressRepository) {
         this.activityRepository = activityRepository;
+        this.userRepository = userRepository;
+        this.addressRepository = addressRepository;
     }
 
-    /**
-     * Gets activity by activity id.
-     *
-     * @param activityId activity id
-     * @return activity by activity id
-     */
     public Optional<Activity> getActivityById(UUID activityId) {
         Optional<Activity> activity = activityRepository.findById(activityId);
         return activity;
     }
 
-    /**
-     * Find all activity.
-     *
-     * @return all activity
-     */
     public List<Activity> getAllActivity() {
         List<Activity> lst = activityRepository.findAll();
         return lst;
     }
 
-    /**
-     * Create new activity TODO.
-     *
-     * @param activityDto activityDto
-     * @return activity
-     */
     public Activity addActivity(ActivityDto activityDto) {
         if (!validateActivity(activityDto)) {
             return null;
@@ -61,13 +48,32 @@ public class ActivityService {
         return activityRepository.save(a);
     }
 
-    /**
-     * validate activity TODO.
-     *
-     * @param activityDto activityDto
-     * @return Whether activity is valid
-     */
-    public boolean validateActivity(ActivityDto activityDto) {
+    public int getCurrentParticipant(UUID activityId) {
+        Optional<Activity> activity = getActivityById(activityId);
+        if (activity.isPresent() && !activity.isEmpty()) {
+            return activity.get().getCurrentParticipants();
+        }
+        return -1;
+    }
+
+    public List<Activity> getActivityRanking(String userName) {
+        // To do
+        User user = getUserByUsername(userName);
+        Address address = addressRepository.getAddressByUserId(user.getUserId());
+        /*
+        search in location table, based on address, get list of all activities_locations
+        within 50 miles of address, then query activity table, get list of all activities
+        sort by current_participants.
+         */
+
+        return null;
+    }
+
+    public User getUserByUsername(String userName) {
+        return userRepository.findByUsername(userName);
+    }
+
+    private boolean validateActivity(ActivityDto activityDto) {
         // TO DO
         return true;
     }

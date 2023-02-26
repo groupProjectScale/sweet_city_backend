@@ -8,7 +8,7 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
+    private String hashPasswordWithSalt;
 
     public UserDto() {}
 
@@ -44,11 +44,11 @@ public class UserDto {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getHashPasswordWithSalt() {
+        return hashPasswordWithSalt;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setHashPasswordWithSalt(String hashPasswordWithSalt) {
+        this.hashPasswordWithSalt = hashPasswordWithSalt;
     }
 }
