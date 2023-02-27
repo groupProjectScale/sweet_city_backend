@@ -84,7 +84,7 @@ public class Activity {
      */
     public void addAttendee(User user) {
         this.attendees.add(user);
-        // user.getActivities().add(this);
+        user.getActivities().add(this);
     }
 
     /**
