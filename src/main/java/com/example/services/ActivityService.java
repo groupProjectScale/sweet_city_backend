@@ -1,6 +1,7 @@
 package com.example.services;
 
 import com.example.dto.ActivityDto;
+import com.example.dto.UserLoginDto;
 import com.example.model.Activity;
 import com.example.model.Address;
 import com.example.model.User;
@@ -74,7 +75,75 @@ public class ActivityService {
     }
 
     private boolean validateActivity(ActivityDto activityDto) {
-        // TO DO
+        // TODO
+        return true;
+    }
+
+    public Activity addAttendee(UUID activityId, UserLoginDto userLoginDto) {
+        if (!validateAttendeeForJoin(activityId, userLoginDto)) {
+            return null;
+        }
+        Activity activity = activityRepository.findById(activityId).get();
+        User user = userRepository.findByUsername(userLoginDto.getUserName());
+        activity.setCurrentParticipants(activity.getCurrentParticipants() + 1);
+        activity.addAttendee(user);
+        activityRepository.save(activity);
+        return activity;
+    }
+
+    private boolean validateAttendeeForJoin(UUID activityId, UserLoginDto userLoginDto) {
+        User user =
+                userRepository.findByUserNameAndHashPasswordWithSalt(
+                        userLoginDto.getUserName(), userLoginDto.getHashPasswordWithSalt());
+        Optional<Activity> activity = activityRepository.findById(activityId);
+
+        // Activity and user must exists
+        if (activity.isEmpty() || user == null) {
+            return false;
+        }
+
+        // Activity size is not full
+        if (activity.get().getMaximumParticipants() != null
+                && activity.get().getCurrentParticipants()
+                        >= activity.get().getMaximumParticipants()) {
+            return false;
+        }
+
+        // User did not join activity already
+        if (activity.get().getAttendees().contains(user)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean deleteAttendee(UUID activityId, UserLoginDto userLoginDto) {
+        if (!validateAttendeeForQuit(activityId, userLoginDto)) {
+            return false;
+        }
+        Activity activity = activityRepository.findById(activityId).get();
+        User user = userRepository.findByUsername(userLoginDto.getUserName());
+        activity.removeAttendee(user);
+        activity.setCurrentParticipants(activity.getCurrentParticipants() - 1);
+        activityRepository.save(activity);
+        return true;
+    }
+
+    private boolean validateAttendeeForQuit(UUID activityId, UserLoginDto userLoginDto) {
+        User user =
+                userRepository.findByUserNameAndHashPasswordWithSalt(
+                        userLoginDto.getUserName(), userLoginDto.getHashPasswordWithSalt());
+
+        Optional<Activity> activity = activityRepository.findById(activityId);
+
+        // Activity and User must exists
+        if (activity.isEmpty() || user == null) {
+            return false;
+        }
+
+        // User must joined activity before
+        if (!activity.get().getAttendees().contains(user)) {
+            return false;
+        }
         return true;
     }
 }

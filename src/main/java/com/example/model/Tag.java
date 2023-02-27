@@ -15,13 +15,16 @@ import javax.persistence.Table;
 public class Tag {
     @Id
     @GeneratedValue(generator = "UUID")
-    @Column(updatable = false)
+    @Column(name = "tag_id", updatable = false, nullable = false)
     private UUID tagId;
 
     @ManyToMany(mappedBy = "tags")
     private Set<Activity> activities = new HashSet<>();
 
+    @Column(name = "tag_description", nullable = false)
     private String tagDescription;
+
+    @Column(name = "num_of_creations")
     private Integer numOfCreations;
 
     public Tag() {}

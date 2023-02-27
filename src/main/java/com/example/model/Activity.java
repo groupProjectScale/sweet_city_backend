@@ -4,8 +4,10 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -30,31 +32,31 @@ public class Activity {
     @Column(name = "activity_id", updatable = false, nullable = false)
     private UUID activityId;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     private UUID creatorId; // linked back to client table
 
-    @Column(name = "start_time")
+    @Column(name = "start_time", nullable = false)
     private Timestamp startTime;
 
-    @Column(name = "end_time")
+    @Column(name = "end_time", nullable = false)
     private Timestamp endTime;
 
-    @Column(name = "location_id", nullable = true)
+    @Column(name = "location_id")
     private UUID locationId;
 
-    @Column(name = "price", nullable = true)
+    @Column(name = "price")
     private double price;
 
-    @Column(name = "current_participants", nullable = true, columnDefinition = "integer default 1")
+    @Column(name = "current_participants", columnDefinition = "integer default 1")
     private Integer currentParticipants = 1;
 
-    @Column(name = "minimum_participants", nullable = true)
+    @Column(name = "minimum_participants")
     private Integer minimumParticipants;
 
-    @Column(name = "maximum_participants", nullable = true)
+    @Column(name = "maximum_participants")
     private Integer maximumParticipants;
 
     @ManyToMany
@@ -64,12 +66,14 @@ public class Activity {
             inverseJoinColumns = @JoinColumn(name = "requirement_id"))
     private final Set<Requirement> requirements = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "activity_attendee",
             joinColumns = @JoinColumn(name = "activity_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private final Set<User> attendees = new HashSet<>();
+    private Set<User> attendees = new HashSet<>();
 
     public Activity() {}
 
@@ -80,6 +84,7 @@ public class Activity {
      */
     public void addAttendee(User user) {
         this.attendees.add(user);
+        // user.getActivities().add(this);
     }
 
     /**
@@ -97,7 +102,8 @@ public class Activity {
      * @param user the user
      */
     public void removeAttendee(User user) {
-        this.attendees.remove(user.getUserId());
+        this.attendees.remove(user);
+        user.getActivities().remove(this);
     }
 
     /**
