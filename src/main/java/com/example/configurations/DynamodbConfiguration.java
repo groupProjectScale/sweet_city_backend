@@ -17,6 +17,8 @@ public class DynamodbConfiguration {
 
     @Value("${amazon.dynamodb.accesskey}") private String accessKey;
 
+    @Value("${amazon.dynamodb.region}") private String region;
+
     @Value("${amazon.dynamodb.secretkey}") private String secretKey;
 
     @Bean
@@ -24,11 +26,10 @@ public class DynamodbConfiguration {
 
         AwsCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
         AwsCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(credentials);
-        Region region = Region.US_EAST_1;
         return DynamoDbClient.builder()
                 .credentialsProvider(credentialsProvider)
                 .endpointOverride(URI.create(endpointUrl))
-                .region(region)
+                .region(Region.of(region))
                 .build();
     }
 
