@@ -15,7 +15,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class ActivityService {
 
@@ -127,7 +126,7 @@ public class ActivityService {
         }
         Activity activity = activityRepository.findById(activityId).get();
         User user = userRepository.findByUsername(userLoginDto.getUserName());
-        //remove user from activity
+        // remove user from activity
         activity.removeAttendee(user);
         activity.setCurrentParticipants(activity.getCurrentParticipants() - 1);
         // save to the database

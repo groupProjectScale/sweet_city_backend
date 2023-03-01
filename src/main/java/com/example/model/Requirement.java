@@ -1,7 +1,6 @@
 package com.example.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -24,7 +23,8 @@ public class Requirement {
 
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY,
+    @ManyToMany(
+            fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "requirements")
     @JsonIgnore
