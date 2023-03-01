@@ -1,5 +1,7 @@
 package com.example.services;
 
+import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
+
 import com.example.dto.ActivityDto;
 import com.example.dto.UserLoginDto;
 import com.example.model.Activity;
@@ -80,7 +82,9 @@ public class ActivityService {
         return true;
     }
 
-    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Transactional(
+            rollbackFor = {RuntimeException.class, Exception.class},
+            isolation = SERIALIZABLE)
     public Activity addAttendee(UUID activityId, UserLoginDto userLoginDto) {
         // check if user can join activity
         if (!validateAttendeeForJoin(activityId, userLoginDto)) {
@@ -118,7 +122,9 @@ public class ActivityService {
         return true;
     }
 
-    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Transactional(
+            rollbackFor = {RuntimeException.class, Exception.class},
+            isolation = SERIALIZABLE)
     public boolean deleteAttendee(UUID activityId, UserLoginDto userLoginDto) {
         // check if user can quit activity
         if (!validateAttendeeForQuit(activityId, userLoginDto)) {
