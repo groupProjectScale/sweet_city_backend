@@ -11,9 +11,9 @@ import com.example.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import javax.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ActivityService {
@@ -80,7 +80,7 @@ public class ActivityService {
         return true;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     public Activity addAttendee(UUID activityId, UserLoginDto userLoginDto) {
         // check if user can join activity
         if (!validateAttendeeForJoin(activityId, userLoginDto)) {
@@ -118,7 +118,7 @@ public class ActivityService {
         return true;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     public boolean deleteAttendee(UUID activityId, UserLoginDto userLoginDto) {
         // check if user can quit activity
         if (!validateAttendeeForQuit(activityId, userLoginDto)) {
