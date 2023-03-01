@@ -20,13 +20,6 @@ import javax.persistence.Table;
 @Table(name = "activity")
 public class Activity {
 
-    @ManyToMany
-    @JoinTable(
-            name = "activity_tag",
-            joinColumns = @JoinColumn(name = "activity_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private final Set<Tag> tags = new HashSet<>();
-
     @Id
     @GeneratedValue(generator = "UUID")
     @Column(name = "activity_id", updatable = false, nullable = false)
@@ -59,7 +52,9 @@ public class Activity {
     @Column(name = "maximum_participants")
     private Integer maximumParticipants;
 
-    @ManyToMany
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "activity_requirement",
             joinColumns = @JoinColumn(name = "activity_id"),
@@ -70,10 +65,19 @@ public class Activity {
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
+            name = "activity_tag",
+            joinColumns = @JoinColumn(name = "activity_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private final Set<Tag> tags = new HashSet<>();
+
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
             name = "activity_attendee",
             joinColumns = @JoinColumn(name = "activity_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> attendees = new HashSet<>();
+    private final Set<User> attendees = new HashSet<>();
 
     public Activity() {}
 

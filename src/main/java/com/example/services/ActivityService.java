@@ -11,8 +11,10 @@ import com.example.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class ActivityService {
@@ -79,14 +81,18 @@ public class ActivityService {
         return true;
     }
 
+    @Transactional
     public Activity addAttendee(UUID activityId, UserLoginDto userLoginDto) {
+        // check if user can join activity
         if (!validateAttendeeForJoin(activityId, userLoginDto)) {
             return null;
         }
         Activity activity = activityRepository.findById(activityId).get();
         User user = userRepository.findByUsername(userLoginDto.getUserName());
+        // add user to activity
         activity.setCurrentParticipants(activity.getCurrentParticipants() + 1);
         activity.addAttendee(user);
+        // save to database
         activityRepository.save(activity);
         return activity;
     }
@@ -96,34 +102,35 @@ public class ActivityService {
                 userRepository.findByUserNameAndHashPasswordWithSalt(
                         userLoginDto.getUserName(), userLoginDto.getHashPasswordWithSalt());
         Optional<Activity> activity = activityRepository.findById(activityId);
-
-        // Activity and user must exists
+        // activity and user must exists
         if (activity.isEmpty() || user == null) {
             return false;
         }
-
-        // Activity size is not full
+        // activity size is not full
         if (activity.get().getMaximumParticipants() != null
                 && activity.get().getCurrentParticipants()
                         >= activity.get().getMaximumParticipants()) {
             return false;
         }
-
-        // User did not join activity already
+        // user did not join activity already
         if (activity.get().getAttendees().contains(user)) {
             return false;
         }
         return true;
     }
 
+    @Transactional
     public boolean deleteAttendee(UUID activityId, UserLoginDto userLoginDto) {
+        // check if user can quit activity
         if (!validateAttendeeForQuit(activityId, userLoginDto)) {
             return false;
         }
         Activity activity = activityRepository.findById(activityId).get();
         User user = userRepository.findByUsername(userLoginDto.getUserName());
+        //remove user from activity
         activity.removeAttendee(user);
         activity.setCurrentParticipants(activity.getCurrentParticipants() - 1);
+        // save to the database
         activityRepository.save(activity);
         return true;
     }
@@ -135,12 +142,12 @@ public class ActivityService {
 
         Optional<Activity> activity = activityRepository.findById(activityId);
 
-        // Activity and User must exists
+        // activity and User must exists
         if (activity.isEmpty() || user == null) {
             return false;
         }
 
-        // User must joined activity before
+        // user must joined activity before
         if (!activity.get().getAttendees().contains(user)) {
             return false;
         }
