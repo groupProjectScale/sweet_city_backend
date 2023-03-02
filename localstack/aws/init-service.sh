@@ -27,8 +27,10 @@ awslocal dynamodb create-table \
   --table-name $LIVE_PARTICIPANTS_TABLE_NAME \
   --attribute-definitions \
     AttributeName=$ACTIVITY_UUID_ATTRIBUTE_NAME,AttributeType=S \
+    AttributeName=$NUM_PARTICIPANTS_ATTRIBUTE_NAME,AttributeType=N \
   --key-schema \
     AttributeName=$ACTIVITY_UUID_ATTRIBUTE_NAME,KeyType=HASH \
+    AttributeName=$NUM_PARTICIPANTS_ATTRIBUTE_NAME,KeyType=RANGE \
   --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
 
 # Wait for the live participants table to be created before proceeding
@@ -43,4 +45,4 @@ awslocal dynamodb put-item \
     --item '{"activity_uuid": {"S": "activity1"}, "user_uuid": {"S": "user2"}, "participant_state": {"S": "joined"}}'
 awslocal dynamodb put-item \
   --table-name $LIVE_PARTICIPANTS_TABLE_NAME \
-  --item '{"activity_uuid": {"S": "activity1"}, "number_of_participants": {"S": "2"}}'
+  --item '{"activity_uuid": {"S": "activity1"}, "number_of_participants": {"N": "2"}}'
