@@ -45,13 +45,10 @@ public class ActivityController {
     }
 
     @PostMapping("/join/{activityId}")
-    public ResponseEntity<Activity> joinActivity(
+    public ResponseEntity<Boolean> joinActivity(
             @PathVariable("activityId") UUID activityId, @RequestBody UserLoginDto userLoginDto) {
-        Activity activity = activityService.addAttendee(activityId, userLoginDto);
-        if (activity == null) {
-            return ResponseEntity.badRequest().body(null);
-        }
-        return ResponseEntity.ok(activity);
+        boolean res = activityService.addAttendee(activityId, userLoginDto);
+        return ResponseEntity.ok(res);
     }
 
     @PostMapping("/quit/{activityId}")

@@ -12,6 +12,7 @@ import com.example.repository.AddressRepository;
 import com.example.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -85,40 +86,29 @@ public class ActivityService {
     @Transactional(
             rollbackFor = {RuntimeException.class, Exception.class},
             isolation = SERIALIZABLE)
-    public Activity addAttendee(UUID activityId, UserLoginDto userLoginDto) {
-        // check if user can join activity
-        if (!validateAttendeeForJoin(activityId, userLoginDto)) {
-            return null;
-        }
-        Activity activity = activityRepository.findById(activityId).get();
-        User user = userRepository.findByUsername(userLoginDto.getUserName());
-        // add user to activity
-        activity.setCurrentParticipants(activity.getCurrentParticipants() + 1);
-        activity.addAttendee(user);
-        // save to database
-        activityRepository.save(activity);
-        return activity;
-    }
-
-    private boolean validateAttendeeForJoin(UUID activityId, UserLoginDto userLoginDto) {
-        User user =
-                userRepository.findByUserNameAndHashPasswordWithSalt(
-                        userLoginDto.getUserName(), userLoginDto.getHashPasswordWithSalt());
+    public Boolean addAttendee(UUID activityId, UserLoginDto userLoginDto) {
         Optional<Activity> activity = activityRepository.findById(activityId);
-        // activity and user must exists
+        User user = userRepository.findByUsername(userLoginDto.getUserName());
+        // activity or user do not exists
         if (activity.isEmpty() || user == null) {
             return false;
         }
-        // activity size is not full
-        if (activity.get().getMaximumParticipants() != null
-                && activity.get().getCurrentParticipants()
-                        >= activity.get().getMaximumParticipants()) {
+        Integer currParticipants = activity.get().getCurrentParticipants();
+        Integer maxParticipants = activity.get().getMaximumParticipants();
+        Set<User> attendees = activity.get().getAttendees();
+
+        // activity size is full
+        if (maxParticipants != null && currParticipants >= maxParticipants) {
             return false;
         }
-        // user did not join activity already
-        if (activity.get().getAttendees().contains(user)) {
+        // user joined activity before
+        if (attendees.contains(user)) {
             return false;
         }
+        // add user to activity
+        activity.get().addAttendee(user);
+        activityRepository.save(activity.get());
+        activityRepository.addOneParticipant(activityId);
         return true;
     }
 
@@ -126,36 +116,21 @@ public class ActivityService {
             rollbackFor = {RuntimeException.class, Exception.class},
             isolation = SERIALIZABLE)
     public boolean deleteAttendee(UUID activityId, UserLoginDto userLoginDto) {
-        // check if user can quit activity
-        if (!validateAttendeeForQuit(activityId, userLoginDto)) {
-            return false;
-        }
-        Activity activity = activityRepository.findById(activityId).get();
-        User user = userRepository.findByUsername(userLoginDto.getUserName());
-        // remove user from activity
-        activity.removeAttendee(user);
-        activity.setCurrentParticipants(activity.getCurrentParticipants() - 1);
-        // save to the database
-        activityRepository.save(activity);
-        return true;
-    }
-
-    private boolean validateAttendeeForQuit(UUID activityId, UserLoginDto userLoginDto) {
-        User user =
-                userRepository.findByUserNameAndHashPasswordWithSalt(
-                        userLoginDto.getUserName(), userLoginDto.getHashPasswordWithSalt());
-
         Optional<Activity> activity = activityRepository.findById(activityId);
-
+        User user = userRepository.findByUsername(userLoginDto.getUserName());
         // activity and User must exists
         if (activity.isEmpty() || user == null) {
             return false;
         }
-
+        Set<User> attendees = activity.get().getAttendees();
         // user must joined activity before
-        if (!activity.get().getAttendees().contains(user)) {
+        if (!attendees.contains(user)) {
             return false;
         }
+        // remove user from activity
+        activity.get().removeAttendee(user);
+        activityRepository.save(activity.get());
+        activityRepository.removeOneParticipant(activityId);
         return true;
     }
 }
