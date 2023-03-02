@@ -30,6 +30,7 @@ allprojects {
         implementation(libs.awsSqs)
         implementation platform(libsPlatform.awssdkBom)
         implementation(libs.jpa)
+        implementation(libs.dynamoDB)
         runtimeOnly(libsRuntimeOnly.postgresql)
         testImplementation(libsTest.springbootStarterTest)
     }
