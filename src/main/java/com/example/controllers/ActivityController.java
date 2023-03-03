@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/activity")
 public class ActivityController {
-    private ActivityService activityService;
-    private DynamodbService dynamodbService;
+    private final ActivityService activityService;
+    private final DynamodbService dynamodbService;
 
     public ActivityController(ActivityService activityService, DynamodbService dynamodbService) {
         this.activityService = activityService;
@@ -59,6 +59,15 @@ public class ActivityController {
             @PathVariable("activityId") UUID activityId, @RequestBody UserLoginDto userLoginDto) {
         boolean res = activityService.deleteAttendee(activityId, userLoginDto);
         return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("get/activity/frequency/{tagId}")
+    public ResponseEntity<String> getNumberOfCreationsForTag(@PathVariable String tagId) {
+        if (!activityService.validateTagId(tagId)) {
+            return ResponseEntity.badRequest().body("bad request, this is an invalid tagId");
+        }
+        int num = activityService.getNumberOfCreationsForTag(tagId);
+        return ResponseEntity.ok(Integer.toString(num));
     }
 
     @GetMapping("/get/{activityId}/current-participant")
@@ -99,7 +108,7 @@ public class ActivityController {
         return ResponseEntity.badRequest().body(false);
     }
 
-    @PostMapping("/{activityId}/{userId}/update")
+    /*@PostMapping("/{activityId}/{userId}/update")
     public ResponseEntity<Boolean> update(
             @PathVariable String activityId, @PathVariable String userId) {
         dynamodbService.updateParticipantState(activityId, userId, "joined");
@@ -117,5 +126,5 @@ public class ActivityController {
     public ResponseEntity<Boolean> addLiveActivity(@PathVariable String activityId) {
         dynamodbService.addLiveActivity(activityId, 0);
         return ResponseEntity.ok(true);
-    }
+    }*/
 }

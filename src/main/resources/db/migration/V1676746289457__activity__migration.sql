@@ -85,13 +85,13 @@ CREATE TABLE IF NOT EXISTS address(
 --INSERT INTO location(name, longitude, latitude, geo) VALUES ('park2',48.608013,-121.335167,ST_Point(48.608013, -121.335167));
 --INSERT INTO location(name, longitude, latitude, geo) VALUES ('park3',49.608013,-121.335167,ST_Point(49.608013, -121.335167));
 
-INSERT INTO activity (name, user_id, start_time, end_time, location_id, current_participants) VALUES ('hiking', uuid_generate_v4(), current_timestamp + interval '3' day, current_timestamp + interval '4' day, '7f6af58f-4191-44e6-97bc-e58d4aeb0e3e', 1);
-INSERT INTO activity (name, user_id, start_time, end_time, location_id, current_participants) VALUES ('swimming', uuid_generate_v4(), current_timestamp + interval '3' day, current_timestamp + interval '4' day, 'c74ba297-3a0c-4e3b-a397-61a9fecfc09c', 2);
-INSERT INTO activity (name, user_id, start_time, end_time, location_id, current_participants) VALUES ('running', uuid_generate_v4(), current_timestamp + interval '3' day, current_timestamp + interval '4' day, '2f7bed3a-f553-47a7-8e65-186b9e43c13f', 3);
+--INSERT INTO activity (name, user_id, start_time, end_time, location_id, current_participants) VALUES ('hiking', uuid_generate_v4(), current_timestamp + interval '3' day, current_timestamp + interval '4' day, '7f6af58f-4191-44e6-97bc-e58d4aeb0e3e', 1);
+--INSERT INTO activity (name, user_id, start_time, end_time, location_id, current_participants) VALUES ('swimming', uuid_generate_v4(), current_timestamp + interval '3' day, current_timestamp + interval '4' day, 'c74ba297-3a0c-4e3b-a397-61a9fecfc09c', 2);
+--INSERT INTO activity (name, user_id, start_time, end_time, location_id, current_participants) VALUES ('running', uuid_generate_v4(), current_timestamp + interval '3' day, current_timestamp + interval '4' day, '2f7bed3a-f553-47a7-8e65-186b9e43c13f', 3);
 
 --INSERT INTO location(location_id,name, longitude, latitude, geo) VALUES ('bcaa80de-6ee2-4f07-804a-2bdfd59b6634','home',46.608013,-122.335167,ST_Point(46.608013, -122.335167));
 --INSERT INTO address(user_id, location, longitude, latitude) values ('9fd9e8cc-5fd1-4063-ae3e-bbbaca0083d2', 'home', 46.608013, -122.335167);
-
+INSERT INTO tag(tag_description, num_of_creations) values ('hikingisfun', 6);
 
 UPDATE address SET geo = ST_Point(longitude, latitude);
 UPDATE location SET geo = ST_Point(longitude, latitude);

@@ -11,6 +11,7 @@ import com.example.model.User;
 import com.example.repository.ActivityRepository;
 import com.example.repository.AddressRepository;
 import com.example.repository.LocationRepository;
+import com.example.repository.TagRepository;
 import com.example.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,17 +30,20 @@ public class ActivityService {
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final LocationRepository locationRepository;
+    private final TagRepository tagRepository;
     private static final int RANKING = 5;
 
     public ActivityService(
             ActivityRepository activityRepository,
             UserRepository userRepository,
             AddressRepository addressRepository,
-            LocationRepository locationRepository) {
+            LocationRepository locationRepository,
+            TagRepository tagRepository) {
         this.activityRepository = activityRepository;
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.locationRepository = locationRepository;
+        this.tagRepository = tagRepository;
     }
 
     public Optional<Activity> getActivityById(UUID activityId) {
@@ -145,5 +149,13 @@ public class ActivityService {
         activityRepository.save(activity.get());
         activityRepository.removeOneParticipant(activityId);
         return true;
+    }
+
+    public int getNumberOfCreationsForTag(String tagId) {
+        return tagRepository.getNumberOfCreationsForTag(tagId);
+    }
+
+    public boolean validateTagId(String tagId) {
+        return tagRepository.findById(UUID.fromString(tagId)).isPresent();
     }
 }
