@@ -26,4 +26,6 @@ public interface ActivityRepository extends JpaRepository<Activity, UUID> {
             "update Activity a set a.currentParticipants = a.currentParticipants - 1 where"
                     + " a.activityId =?1")
     void removeOneParticipant(UUID activityId);
+
+    Activity findActivityByLocationId(UUID locationId);
 }

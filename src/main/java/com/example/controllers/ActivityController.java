@@ -72,8 +72,8 @@ public class ActivityController {
 
     @GetMapping("/get/ranking")
     public ResponseEntity<List<Activity>> getActivityRanking(@RequestBody UserDto userDto) {
-        // To do
-        List<Activity> activities = activityService.getActivityRanking(userDto.getUserName());
+        List<Activity> activities =
+                activityService.getActivityRanking(userDto.getUserName(), Optional.of(2));
         return ResponseEntity.ok().body(activities);
     }
 
