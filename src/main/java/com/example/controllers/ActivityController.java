@@ -2,6 +2,7 @@ package com.example.controllers;
 
 import com.example.dto.ActivityDto;
 import com.example.dto.UserDto;
+import com.example.dto.UserLoginDto;
 import com.example.model.Activity;
 import com.example.services.ActivityService;
 import com.example.services.DynamodbService;
@@ -40,10 +41,24 @@ public class ActivityController {
     }
 
     @PostMapping("/create")
-    // TO DO, For Test Only Now
+    // TODO, For Test Only
     public ResponseEntity<Activity> createActivity(@RequestBody ActivityDto activityDto) {
         Activity activity = activityService.addActivity(activityDto);
         return ResponseEntity.ok(activity);
+    }
+
+    @PostMapping("/join/{activityId}")
+    public ResponseEntity<Boolean> joinActivity(
+            @PathVariable("activityId") UUID activityId, @RequestBody UserLoginDto userLoginDto) {
+        boolean res = activityService.addAttendee(activityId, userLoginDto);
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/quit/{activityId}")
+    public ResponseEntity<Boolean> quitActivity(
+            @PathVariable("activityId") UUID activityId, @RequestBody UserLoginDto userLoginDto) {
+        boolean res = activityService.deleteAttendee(activityId, userLoginDto);
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping("/get/{activityId}/current-participant")

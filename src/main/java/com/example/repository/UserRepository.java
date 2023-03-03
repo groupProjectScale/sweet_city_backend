@@ -11,4 +11,9 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, UUID> {
     @Query(value = "SELECT * FROM client WHERE user_name = ?1", nativeQuery = true)
     User findByUsername(String userName);
+
+    @Query(
+            value = "SELECT * FROM client WHERE user_name = ?1 AND hash_password_with_salt = ?2",
+            nativeQuery = true)
+    User findByUserNameAndHashPasswordWithSalt(String userName, String hashPasswordWithSalt);
 }

@@ -47,12 +47,14 @@ CREATE TABLE IF NOT EXISTS activity_attendee (
 
 CREATE TABLE IF NOT EXISTS activity_tag (
     activity_id UUID NOT NULL,
-    tag_id UUID NOT NULL
+    tag_id UUID NOT NULL,
+    PRIMARY KEY (activity_id, tag_id)
 );
 
 CREATE TABLE IF NOT EXISTS activity_requirement (
     activity_id UUID NOT NULL,
-    requirement_id UUID NOT NULL
+    requirement_id UUID NOT NULL,
+    PRIMARY KEY (activity_id, requirement_id)
 );
 
 CREATE TABLE IF NOT EXISTS address(
