@@ -62,8 +62,8 @@ public class ActivityController {
     }
 
     @GetMapping("/get/{activityId}/current-participant")
-    public ResponseEntity<Integer> getCurrentParticipant(@PathVariable UUID activityId) {
-        int currentParticipant = activityService.getCurrentParticipant(activityId);
+    public ResponseEntity<Integer> getCurrentParticipant(@PathVariable String activityId) {
+        int currentParticipant = dynamodbService.getLiveParticipants(activityId);
         if (currentParticipant == -1) {
             return ResponseEntity.badRequest().body(null);
         }
@@ -99,18 +99,23 @@ public class ActivityController {
         return ResponseEntity.badRequest().body(false);
     }
 
-    /* for testing only
     @PostMapping("/{activityId}/{userId}/update")
-    public ResponseEntity<Boolean> update(@PathVariable String activityId
-        , @PathVariable String userId) {
+    public ResponseEntity<Boolean> update(
+            @PathVariable String activityId, @PathVariable String userId) {
         dynamodbService.updateParticipantState(activityId, userId, "joined");
         return ResponseEntity.ok(true);
     }
+
     @PostMapping("/{activityId}/{userId}/add")
-    public ResponseEntity<Boolean> add(@PathVariable String activityId
-        , @PathVariable String userId) {
+    public ResponseEntity<Boolean> add(
+            @PathVariable String activityId, @PathVariable String userId) {
         dynamodbService.addParticipantState(activityId, userId, "joined");
         return ResponseEntity.ok(true);
     }
-    */
+
+    @PostMapping("/{activityId}/add")
+    public ResponseEntity<Boolean> addLiveActivity(@PathVariable String activityId) {
+        dynamodbService.addLiveActivity(activityId, 0);
+        return ResponseEntity.ok(true);
+    }
 }

@@ -61,14 +61,6 @@ public class ActivityService {
         return activityRepository.save(a);
     }
 
-    public int getCurrentParticipant(UUID activityId) {
-        Optional<Activity> activity = getActivityById(activityId);
-        if (activity.isPresent() && !activity.isEmpty()) {
-            return activity.get().getCurrentParticipants();
-        }
-        return -1;
-    }
-
     public List<Activity> getActivityRanking(String userName, Optional<Integer> top) {
         User user = getUserByUsername(userName);
         Address address = addressRepository.getAddressByUserId(user.getUserId());

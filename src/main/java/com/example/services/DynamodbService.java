@@ -175,4 +175,26 @@ public class DynamodbService {
             System.err.println(e.getMessage());
         }
     }
+
+    // add new activity to live_participants
+    public void addLiveActivity(String activityUuid, int numOfParticipants) {
+        PutItemRequest request =
+                PutItemRequest.builder()
+                        .tableName(liveParticipantsTable)
+                        .item(
+                                Map.of(
+                                        "activity_uuid",
+                                        AttributeValue.builder().s(activityUuid).build(),
+                                        "number_of_participants",
+                                        AttributeValue.builder()
+                                                .n(Integer.toString(numOfParticipants))
+                                                .build()))
+                        .build();
+
+        try {
+            dynamodbClient.putItem(request);
+        } catch (DynamoDbException e) {
+            System.err.println(e.getMessage());
+        }
+    }
 }
