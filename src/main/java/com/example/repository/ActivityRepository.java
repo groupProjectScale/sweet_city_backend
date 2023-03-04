@@ -11,10 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ActivityRepository extends JpaRepository<Activity, UUID> {
 
-    //    @Lock(value = LockModeType.PESSIMISTIC_WRITE)
-    //    @Query("select a from Activity a where a.activityId = ?1")
-    //    Optional<Activity> findByIdForUpdate(UUID activityId);
-
     @Modifying
     @Query(
             "update Activity a set a.currentParticipants = a.currentParticipants + 1 where"
