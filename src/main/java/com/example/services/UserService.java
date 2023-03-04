@@ -8,8 +8,6 @@ import com.example.repository.LocationRepository;
 import com.example.repository.UserRepository;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,18 +25,14 @@ public class UserService {
         this.locationRepository = locationRepository;
     }
 
-    public User addUserWithAddress(User user, Address address)
-            throws ExecutionException, InterruptedException {
-        CompletableFuture<User> userFuture =
-                CompletableFuture.supplyAsync(() -> userRepository.save(user));
-
-        address.setUserId(userFuture.get().getUserId());
+    public User addUserWithAddress(User user, Address address) {
+        User newUser = userRepository.save(user);
+        address.setUserId(newUser.getUserId());
         addressRepository.save(address);
-
         locationRepository.save(
                 new Location(address.getLocation(), address.getLongitude(), address.getLatitude()));
 
-        return getUserByUserId(userFuture.get().getUserId());
+        return newUser;
     }
 
     public User getUserByUserId(UUID userId) {

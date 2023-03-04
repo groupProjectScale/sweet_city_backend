@@ -31,6 +31,8 @@ allprojects {
         implementation platform(libsPlatform.awssdkBom)
         implementation(libs.jpa)
         implementation(libs.dynamoDB)
+        implementation(libs.log4jApi)
+        implementation(libs.log4jCore)
         runtimeOnly(libsRuntimeOnly.postgresql)
         testImplementation(libsTest.springbootStarterTest)
     }

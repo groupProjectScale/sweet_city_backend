@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -21,6 +23,7 @@ public class DynamodbService {
     private final DynamoDbClient dynamodbClient;
     private final String participantsStateTable;
     private final String liveParticipantsTable;
+    private static final Logger logger = LogManager.getLogger(DynamodbService.class);
 
     public DynamodbService(
             DynamoDbClient dynamodbClient, DynamodbConfiguration dynamodbConfiguration) {
@@ -58,7 +61,7 @@ public class DynamodbService {
         try {
             dynamodbClient.deleteItem(deleteRequest);
         } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 
@@ -79,7 +82,7 @@ public class DynamodbService {
         try {
             dynamodbClient.putItem(putRequest);
         } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 
@@ -101,7 +104,7 @@ public class DynamodbService {
         try {
             dynamodbClient.putItem(request);
         } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 
@@ -149,7 +152,7 @@ public class DynamodbService {
                 return 0;
             }
         } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
+            logger.error(e.getMessage());
             return 0;
         }
     }
@@ -172,7 +175,7 @@ public class DynamodbService {
         try {
             dynamodbClient.updateItem(request);
         } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 
@@ -194,7 +197,7 @@ public class DynamodbService {
         try {
             dynamodbClient.putItem(request);
         } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 }

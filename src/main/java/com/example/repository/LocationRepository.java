@@ -18,7 +18,8 @@ public interface LocationRepository extends JpaRepository<Location, UUID> {
                             + "WHERE ST_DistanceSphere(\n"
                             + "    geo,\n"
                             + "    ST_MakePoint(:longitude, :latitude)\n"
-                            + ") < COALESCE(:searchRange, :defaultSearchRange)",
+                            + ") < COALESCE(:searchRange, :defaultSearchRange)\n"
+                            + "LIMIT 10",
             nativeQuery = true)
     List<Location> getNearByLocations(
             @Param("searchRange") Long searchRange,

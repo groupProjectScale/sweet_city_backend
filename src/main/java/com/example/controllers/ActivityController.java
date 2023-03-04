@@ -107,24 +107,4 @@ public class ActivityController {
         }
         return ResponseEntity.badRequest().body(false);
     }
-
-    /*@PostMapping("/{activityId}/{userId}/update")
-    public ResponseEntity<Boolean> update(
-            @PathVariable String activityId, @PathVariable String userId) {
-        dynamodbService.updateParticipantState(activityId, userId, "joined");
-        return ResponseEntity.ok(true);
-    }
-
-    @PostMapping("/{activityId}/{userId}/add")
-    public ResponseEntity<Boolean> add(
-            @PathVariable String activityId, @PathVariable String userId) {
-        dynamodbService.addParticipantState(activityId, userId, "joined");
-        return ResponseEntity.ok(true);
-    }
-
-    @PostMapping("/{activityId}/add")
-    public ResponseEntity<Boolean> addLiveActivity(@PathVariable String activityId) {
-        dynamodbService.addLiveActivity(activityId, 0);
-        return ResponseEntity.ok(true);
-    }*/
 }
