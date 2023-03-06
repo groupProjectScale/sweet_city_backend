@@ -224,4 +224,11 @@ public class ActivityService {
         return requirementRepository.save(r);
     }
 
+    public boolean validateTagId(String tagId) {
+        return tagRepository.findById(UUID.fromString(tagId)).isPresent();
+    }
+
+    public int getNumberOfCreationsForTag(String tagId) {
+        return tagRepository.getNumberOfCreationsForTag(tagId);
+    }
 }

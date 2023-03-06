@@ -15,4 +15,7 @@ public interface TagRepository extends JpaRepository<Tag, UUID> {
     @Modifying
     @Query("update Tag t set t.numOfCreations = t.numOfCreations + 1 where t.tagId =?1")
     void addOneCreation(UUID tagId);
+
+    @Query(value = "SELECT num_of_creations FROM tag WHERE tag_id = ?1", nativeQuery = true)
+    int getNumberOfCreationsForTag(String tagId);
 }
