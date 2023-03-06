@@ -11,6 +11,7 @@ import com.example.model.User;
 import com.example.repository.ActivityRepository;
 import com.example.repository.AddressRepository;
 import com.example.repository.LocationRepository;
+import com.example.repository.RequirementRepository;
 import com.example.repository.TagRepository;
 import com.example.repository.UserRepository;
 import java.util.ArrayList;
@@ -32,18 +33,20 @@ public class ActivityService {
     private final LocationRepository locationRepository;
     private final TagRepository tagRepository;
     private static final int RANKING = 5;
+    private final RequirementRepository requirementRepository;
 
     public ActivityService(
-            ActivityRepository activityRepository,
-            UserRepository userRepository,
-            AddressRepository addressRepository,
-            LocationRepository locationRepository,
-            TagRepository tagRepository) {
+        ActivityRepository activityRepository,
+        UserRepository userRepository,
+        AddressRepository addressRepository,
+        LocationRepository locationRepository,
+        TagRepository tagRepository, RequirementRepository requirementRepository) {
         this.activityRepository = activityRepository;
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.locationRepository = locationRepository;
         this.tagRepository = tagRepository;
+        this.requirementRepository = requirementRepository;
     }
 
     public Optional<Activity> getActivityById(UUID activityId) {
@@ -151,11 +154,4 @@ public class ActivityService {
         return true;
     }
 
-    public int getNumberOfCreationsForTag(String tagId) {
-        return tagRepository.getNumberOfCreationsForTag(tagId);
-    }
-
-    public boolean validateTagId(String tagId) {
-        return tagRepository.findById(UUID.fromString(tagId)).isPresent();
-    }
 }
