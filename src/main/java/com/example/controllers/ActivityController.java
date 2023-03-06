@@ -1,6 +1,8 @@
 package com.example.controllers;
 
 import com.example.dto.ActivityDto;
+import com.example.dto.RequirementDto;
+import com.example.dto.TagDto;
 import com.example.dto.UserDto;
 import com.example.dto.UserLoginDto;
 import com.example.model.Activity;
@@ -45,6 +47,21 @@ public class ActivityController {
     public ResponseEntity<Activity> createActivity(@RequestBody ActivityDto activityDto) {
         Activity activity = activityService.addActivity(activityDto);
         return ResponseEntity.ok(activity);
+    }
+
+    @PostMapping("/add-tag/{activityId}")
+    public ResponseEntity<Boolean> addTagForActivity(
+            @PathVariable(value = "activityId") UUID activityId, @RequestBody TagDto tagDto) {
+        boolean res = activityService.addTagForActivity(activityId, tagDto);
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/add-req/{activityId}")
+    public ResponseEntity<Boolean> addRequirementForActivity(
+            @PathVariable(value = "activityId") UUID activityId,
+            @RequestBody RequirementDto requirementDto) {
+        boolean res = activityService.addRequirementForActivity(activityId, requirementDto);
+        return ResponseEntity.ok(res);
     }
 
     @PostMapping("/join/{activityId}")

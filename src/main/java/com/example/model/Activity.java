@@ -299,6 +299,12 @@ public class Activity {
         return tags;
     }
 
+    /** @param tag the tag */
+    public void addTag(Tag tag) {
+        this.getTags().add(tag);
+        tag.getActivities().add(this);
+    }
+
     /**
      * Gets requirements.
      *
@@ -306,5 +312,11 @@ public class Activity {
      */
     public Set<Requirement> getRequirements() {
         return requirements;
+    }
+
+    /** @param requirement the requirements */
+    public void addRequirements(Requirement requirement) {
+        this.getRequirements().add(requirement);
+        requirement.getActivities().add(this);
     }
 }

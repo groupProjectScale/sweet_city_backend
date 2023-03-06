@@ -31,8 +31,8 @@ public class Tag {
     @Column(name = "tag_description", nullable = false)
     private String tagDescription;
 
-    @Column(name = "num_of_creations")
-    private Integer numOfCreations;
+    @Column(name = "num_of_creations", columnDefinition = "integer default 1")
+    private Integer numOfCreations = 1;
 
     public Tag() {}
 
