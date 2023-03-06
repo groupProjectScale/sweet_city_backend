@@ -7,3 +7,5 @@ CREATE TABLE IF NOT EXISTS client (
         email VARCHAR(255) NOT NULL,
         hash_password_with_salt VARCHAR(255) NOT NULL
 );
+--used for getranking testing
+--insert into client(user_name, first_name, last_name, email, hash_password_with_salt) values ('1bobbboy','bodkljfb','jkdhfd','gamijfdk@gmail.com','djkgfhdsjkg')

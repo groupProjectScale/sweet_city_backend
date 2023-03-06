@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @RestController
 public class SweetCityApplication {
-
     /**
      * The entry point of application.
      *

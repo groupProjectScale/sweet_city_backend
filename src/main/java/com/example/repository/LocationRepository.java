@@ -10,14 +10,20 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LocationRepository extends JpaRepository<Location, UUID> {
-    public static final int SEARCH_RANGE = 83000;
+    public static final long DEFAULT_SEARCH_RANGE = 83000 * 6;
 
     @Query(
             value =
                     "SELECT * FROM location\n"
-                            + "WHERE ST_DistanceSphere((geo,\n"
-                            + "    (SELECT geo FROM location WHERE name = :location)\n"
-                            + ")) < COALESCE(:searchRange, :SEARCH_RANGE);",
+                            + "WHERE ST_DistanceSphere(\n"
+                            + "    geo,\n"
+                            + "    ST_MakePoint(:longitude, :latitude)\n"
+                            + ") < COALESCE(:searchRange, :defaultSearchRange)\n"
+                            + "LIMIT 10",
             nativeQuery = true)
-    List<Location> getNearByLocations(@Param("searchRange") long searchRange, String location);
+    List<Location> getNearByLocations(
+            @Param("searchRange") Long searchRange,
+            @Param("defaultSearchRange") Long defaultSearchRange,
+            @Param("longitude") Double longitude,
+            @Param("latitude") Double latitude);
 }

@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/activity")
 public class ActivityController {
-    private ActivityService activityService;
-    private DynamodbService dynamodbService;
+    private final ActivityService activityService;
+    private final DynamodbService dynamodbService;
 
     public ActivityController(ActivityService activityService, DynamodbService dynamodbService) {
         this.activityService = activityService;
@@ -78,9 +78,18 @@ public class ActivityController {
         return ResponseEntity.ok(res);
     }
 
+    @GetMapping("get/activity/frequency/{tagId}")
+    public ResponseEntity<String> getNumberOfCreationsForTag(@PathVariable String tagId) {
+        if (!activityService.validateTagId(tagId)) {
+            return ResponseEntity.badRequest().body("bad request, this is an invalid tagId");
+        }
+        int num = activityService.getNumberOfCreationsForTag(tagId);
+        return ResponseEntity.ok(Integer.toString(num));
+    }
+
     @GetMapping("/get/{activityId}/current-participant")
-    public ResponseEntity<Integer> getCurrentParticipant(@PathVariable UUID activityId) {
-        int currentParticipant = activityService.getCurrentParticipant(activityId);
+    public ResponseEntity<Integer> getCurrentParticipant(@PathVariable String activityId) {
+        int currentParticipant = dynamodbService.getLiveParticipants(activityId);
         if (currentParticipant == -1) {
             return ResponseEntity.badRequest().body(null);
         }
@@ -89,8 +98,8 @@ public class ActivityController {
 
     @GetMapping("/get/ranking")
     public ResponseEntity<List<Activity>> getActivityRanking(@RequestBody UserDto userDto) {
-        // To do
-        List<Activity> activities = activityService.getActivityRanking(userDto.getUserName());
+        List<Activity> activities =
+                activityService.getActivityRanking(userDto.getUserName(), Optional.of(2));
         return ResponseEntity.ok().body(activities);
     }
 
@@ -115,19 +124,4 @@ public class ActivityController {
         }
         return ResponseEntity.badRequest().body(false);
     }
-
-    /* for testing only
-    @PostMapping("/{activityId}/{userId}/update")
-    public ResponseEntity<Boolean> update(@PathVariable String activityId
-        , @PathVariable String userId) {
-        dynamodbService.updateParticipantState(activityId, userId, "joined");
-        return ResponseEntity.ok(true);
-    }
-    @PostMapping("/{activityId}/{userId}/add")
-    public ResponseEntity<Boolean> add(@PathVariable String activityId
-        , @PathVariable String userId) {
-        dynamodbService.addParticipantState(activityId, userId, "joined");
-        return ResponseEntity.ok(true);
-    }
-    */
 }

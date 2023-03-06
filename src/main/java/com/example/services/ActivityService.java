@@ -8,14 +8,18 @@ import com.example.dto.TagDto;
 import com.example.dto.UserLoginDto;
 import com.example.model.Activity;
 import com.example.model.Address;
+import com.example.model.Location;
 import com.example.model.Requirement;
 import com.example.model.Tag;
 import com.example.model.User;
 import com.example.repository.ActivityRepository;
 import com.example.repository.AddressRepository;
+import com.example.repository.LocationRepository;
 import com.example.repository.RequirementRepository;
 import com.example.repository.TagRepository;
 import com.example.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -32,16 +36,20 @@ public class ActivityService {
     private final AddressRepository addressRepository;
     private final TagRepository tagRepository;
     private final RequirementRepository requirementRepository;
+    private final LocationRepository locationRepository;
+    private static final int RANKING = 5;
 
     public ActivityService(
             ActivityRepository activityRepository,
             UserRepository userRepository,
             AddressRepository addressRepository,
+            LocationRepository locationRepository,
             TagRepository tagRepository,
             RequirementRepository requirementRepository) {
         this.activityRepository = activityRepository;
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
+        this.locationRepository = locationRepository;
         this.tagRepository = tagRepository;
         this.requirementRepository = requirementRepository;
     }
@@ -65,25 +73,30 @@ public class ActivityService {
         return activityRepository.save(a);
     }
 
-    public int getCurrentParticipant(UUID activityId) {
-        Optional<Activity> activity = getActivityById(activityId);
-        if (activity.isPresent() && !activity.isEmpty()) {
-            return activity.get().getCurrentParticipants();
-        }
-        return -1;
-    }
-
-    public List<Activity> getActivityRanking(String userName) {
-        // To do
+    public List<Activity> getActivityRanking(String userName, Optional<Integer> top) {
         User user = getUserByUsername(userName);
         Address address = addressRepository.getAddressByUserId(user.getUserId());
-        /*
-        search in location table, based on address, get list of all activities_locations
-        within 50 miles of address, then query activity table, get list of all activities
-        sort by current_participants.
-         */
 
-        return null;
+        List<Location> locations =
+                locationRepository.getNearByLocations(
+                        null,
+                        LocationRepository.DEFAULT_SEARCH_RANGE,
+                        address.getLongitude(),
+                        address.getLatitude());
+
+        List<Activity> activities = new ArrayList<>();
+        for (Location location : locations) {
+            Activity activity =
+                    activityRepository.findActivityByLocationId(location.getLocationId());
+            if (activity != null) {
+                activities.add(activity);
+            }
+        }
+        activities.sort(Comparator.comparingInt(Activity::getCurrentParticipants).reversed());
+        if (top.isPresent()) {
+            return activities.subList(0, Math.min(top.get(), activities.size()));
+        }
+        return activities.subList(0, Math.min(RANKING, activities.size()));
     }
 
     public User getUserByUsername(String userName) {
@@ -209,5 +222,13 @@ public class ActivityService {
         }
         BeanUtils.copyProperties(requirementDto, r);
         return requirementRepository.save(r);
+    }
+
+    public boolean validateTagId(String tagId) {
+        return tagRepository.findById(UUID.fromString(tagId)).isPresent();
+    }
+
+    public int getNumberOfCreationsForTag(String tagId) {
+        return tagRepository.getNumberOfCreationsForTag(tagId);
     }
 }
