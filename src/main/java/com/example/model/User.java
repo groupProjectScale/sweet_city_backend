@@ -36,6 +36,21 @@ public class User {
 
     public User() {}
 
+    public User(
+            UUID userId,
+            String userName,
+            String firstName,
+            String lastName,
+            String email,
+            String hashPasswordWithSalt) {
+        this.userId = userId;
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.hashPasswordWithSalt = hashPasswordWithSalt;
+    }
+
     public UUID getUserId() {
         return userId;
     }

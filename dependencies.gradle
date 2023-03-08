@@ -17,12 +17,20 @@ ext.libs = [
 
 ext.libsPlatform = [
         'awssdkBom':'software.amazon.awssdk:bom:2.16.60',
+        'testcontainers': 'org.testcontainers:testcontainers-bom:1.17.6'
 ]
 
 ext.libsTest = [
-    'springbootStarterTest': 'org.springframework.boot:spring-boot-starter-test'
+    'springbootStarterTest': 'org.springframework.boot:spring-boot-starter-test',
+    'junit': 'org.junit.jupiter:junit-jupiter-api:5.8.1',
+    'junitTestcontainers': 'org.testcontainers:junit-jupiter',
+    'mockito': 'org.mockito:mockito-core:3.11.2',
+    'assertj': 'org.assertj:assertj-core:3.19.0',
+    'testPostgresql': 'org.testcontainers:postgresql',
+    'testflyway': 'org.flywaydb:flyway-core:7.15.0'
 ]
 
 ext.libsRuntimeOnly = [
-        'postgresql': 'org.postgresql:postgresql'
+        'postgresql': 'org.postgresql:postgresql',
+        'jupiterEngine': 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 ]

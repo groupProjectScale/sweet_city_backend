@@ -59,7 +59,7 @@ public class UserController {
         if (userDto == null || userDto.getUserName() == null) {
             return false;
         }
-        if (userDto.getFirstName() == null || userDto.getFirstName().length() <= 5) {
+        if (userDto.getFirstName() == null || userDto.getFirstName().length() <= 2) {
             return false;
         }
         return true;

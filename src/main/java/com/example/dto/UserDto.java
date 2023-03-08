@@ -12,6 +12,19 @@ public class UserDto {
 
     public UserDto() {}
 
+    public UserDto(
+            String userName,
+            String firstName,
+            String lastName,
+            String email,
+            String hashPasswordWithSalt) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.hashPasswordWithSalt = hashPasswordWithSalt;
+    }
+
     public String getUserName() {
         return userName;
     }
