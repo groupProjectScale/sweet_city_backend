@@ -23,7 +23,7 @@ public class UserRepositoryTest extends BaseTest {
     }
 
     @Test
-    void testFindByUsername() {
+    void testFindByUsername_returnUser() {
         userRepository.save(expectedUser);
 
         User result = userRepository.findByUsername(expectedUser.getUserName());
@@ -33,7 +33,7 @@ public class UserRepositoryTest extends BaseTest {
     }
 
     @Test
-    void testFindByUserNameAndHashPasswordWithSalt() {
+    void testFindByUserNameAndHashPasswordWithSalt_returnUser() {
         userRepository.save(expectedUser);
         User result =
                 userRepository.findByUserNameAndHashPasswordWithSalt(
@@ -45,7 +45,7 @@ public class UserRepositoryTest extends BaseTest {
     }
 
     @Test
-    void testSave() {
+    void testSave_returnSavedUser() {
         User result = userRepository.save(expectedUser);
 
         assertThat(result).isNotNull();
