@@ -7,6 +7,13 @@ plugins {
 }
 
 allprojects {
+    apply plugin : 'java'
+    apply plugin : 'org.springframework.boot'
+    apply plugin : 'io.spring.dependency-management'
+    apply plugin : 'com.diffplug.spotless'
+    apply plugin : 'org.flywaydb.flyway'
+
+
     group 'org.example'
     version '1.0-SNAPSHOT'
     sourceCompatibility = '11'
@@ -27,25 +34,13 @@ allprojects {
         implementation(libs.jacksonDatabind)
         implementation(libs.hikariCP)
         implementation(libs.jdbi)
-        implementation(libs.awsS3)
-        implementation(libs.awsSqs)
         implementation platform(libsPlatform.awssdkBom)
         implementation platform(libsPlatform.testcontainers)
         implementation(libs.jpa)
-        implementation(libs.dynamoDB)
         implementation(libs.log4jApi)
         implementation(libs.log4jCore)
-        runtimeOnly(libsRuntimeOnly.postgresql)
-
         testImplementation(libsTest.springbootStarterTest)
         testImplementation(libsTest.junit)
-        testImplementation(libsTest.junitTestcontainers)
-        testImplementation(libsTest.mockito)
-        testImplementation(libsTest.assertj)
-        testImplementation(libsTest.testPostgresql)
-        testImplementation(libsTest.testflyway)
-
-
         testRuntimeOnly(libsRuntimeOnly.jupiterEngine)
     }
 
@@ -79,4 +74,13 @@ allprojects {
         user = "postgres"
         password = "postgres"
     }
+}
+
+
+dependencies {
+    implementation project("activity-service")
+}
+
+bootJar {
+    mainClass = 'com.example.SweetCityApplication'
 }

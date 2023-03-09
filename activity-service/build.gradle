@@ -1,0 +1,13 @@
+dependencies {
+
+    implementation(libs.dynamoDB)
+    runtimeOnly(libsRuntimeOnly.postgresql)
+
+    testImplementation(libsTest.junitTestcontainers)
+    testImplementation(libsTest.mockito)
+    testImplementation(libsTest.assertj)
+    testImplementation(libsTest.testPostgresql)
+    testImplementation(libsTest.testflyway)
+
+    testRuntimeOnly(libsRuntimeOnly.jupiterEngine)
+}
