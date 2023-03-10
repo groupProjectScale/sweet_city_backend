@@ -1,23 +1,21 @@
 ext.libs = [
-        'springbootStarter':'org.springframework.boot:spring-boot-starter',
-        'springWeb': 'org.springframework:spring-web:5.3.20',
-        'springbootStarterWeb': 'org.springframework.boot:spring-boot-starter-web:2.7.1',
-        'springbootStarterActuator': 'org.springframework.boot:spring-boot-starter-actuator',
-        'springbootStarterValidation': 'org.springframework.boot:spring-boot-starter-validation',
-        'jacksonDatabind': 'com.fasterxml.jackson.core:jackson-databind:2.13.3',
-        'hikariCP':'com.zaxxer:HikariCP:5.0.1',
-        'jdbi': 'org.jdbi:jdbi3-core:3.31.0',
-        'awsS3':'software.amazon.awssdk:s3',
-        'awsSqs': 'software.amazon.awssdk:sqs',
-        'jpa':'org.springframework.boot:spring-boot-starter-data-jpa',
-        'dynamoDB': 'software.amazon.awssdk:dynamodb',
-        'log4jApi': 'org.apache.logging.log4j:log4j-api:2.19.0',
-        'log4jCore': 'org.apache.logging.log4j:log4j-core:2.19.0'
+    'springbootStarter':'org.springframework.boot:spring-boot-starter',
+    'springWeb': 'org.springframework:spring-web:5.3.20',
+    'springbootStarterWeb': 'org.springframework.boot:spring-boot-starter-web:2.7.1',
+    'springbootStarterActuator': 'org.springframework.boot:spring-boot-starter-actuator',
+    'springbootStarterValidation': 'org.springframework.boot:spring-boot-starter-validation',
+    'jacksonDatabind': 'com.fasterxml.jackson.core:jackson-databind:2.13.3',
+    'awsS3':'software.amazon.awssdk:s3',
+    'awsSqs': 'software.amazon.awssdk:sqs',
+    'jpa':'org.springframework.boot:spring-boot-starter-data-jpa',
+    'dynamoDB': 'software.amazon.awssdk:dynamodb',
+    'log4jApi': 'org.apache.logging.log4j:log4j-api:2.19.0',
+    'log4jCore': 'org.apache.logging.log4j:log4j-core:2.19.0'
 ]
 
 ext.libsPlatform = [
-        'awssdkBom':'software.amazon.awssdk:bom:2.16.60',
-        'testcontainers': 'org.testcontainers:testcontainers-bom:1.17.6'
+    'awssdkBom':'software.amazon.awssdk:bom:2.16.60',
+    'testcontainers': 'org.testcontainers:testcontainers-bom:1.17.6'
 ]
 
 ext.libsTest = [
@@ -31,6 +29,6 @@ ext.libsTest = [
 ]
 
 ext.libsRuntimeOnly = [
-        'postgresql': 'org.postgresql:postgresql',
-        'jupiterEngine': 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    'postgresql': 'org.postgresql:postgresql',
+    'jupiterEngine': 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 ]

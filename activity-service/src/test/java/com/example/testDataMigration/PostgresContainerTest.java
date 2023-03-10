@@ -1,4 +1,4 @@
-package com.example.testcontainers;
+package com.example.testDataMigration;
 
 import com.example.BaseTest;
 import java.sql.Connection;
