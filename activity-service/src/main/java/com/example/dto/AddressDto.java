@@ -12,6 +12,13 @@ public class AddressDto {
 
     public AddressDto() {}
 
+    public AddressDto(UUID userId, String location, double longitude, double latitude) {
+        this.userId = userId;
+        this.location = location;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
     public UUID getUserId() {
         return userId;
     }

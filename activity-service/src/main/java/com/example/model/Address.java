@@ -24,6 +24,13 @@ public class Address {
 
     public Address() {}
 
+    public Address(UUID userId, String location, double longitude, double latitude) {
+        this.userId = userId;
+        this.location = location;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
     public UUID getAddressId() {
         return addressId;
     }
