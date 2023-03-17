@@ -32,6 +32,8 @@ dependencies {
     implementation(libs.log4jCore)
 
     implementation(libs.dynamoDB)
+    implementation('software.amazon.awssdk:sqs')
+    implementation('software.amazon.awssdk:s3')
     runtimeOnly(libsRuntimeOnly.postgresql)
 
     testImplementation(libsTest.springbootStarterTest)
