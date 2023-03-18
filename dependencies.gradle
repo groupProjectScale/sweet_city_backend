@@ -7,6 +7,7 @@ ext.libs = [
     'jacksonDatabind': 'com.fasterxml.jackson.core:jackson-databind:2.13.3',
     'awsS3':'software.amazon.awssdk:s3',
     'awsSqs': 'software.amazon.awssdk:sqs',
+    'redisson': 'org.redisson:redisson:3.2.0',
     'jpa':'org.springframework.boot:spring-boot-starter-data-jpa',
     'dynamoDB': 'software.amazon.awssdk:dynamodb',
     'log4jApi': 'org.apache.logging.log4j:log4j-api:2.19.0',

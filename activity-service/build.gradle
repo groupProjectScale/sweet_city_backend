@@ -30,7 +30,7 @@ dependencies {
     implementation(libs.jpa)
     implementation(libs.log4jApi)
     implementation(libs.log4jCore)
-
+    implementation(libs.redisson)
     implementation(libs.dynamoDB)
     runtimeOnly(libsRuntimeOnly.postgresql)
 
