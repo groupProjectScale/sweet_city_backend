@@ -24,7 +24,7 @@ public class Requirement {
     private String description;
 
     @ManyToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "requirements")
     @JsonIgnore

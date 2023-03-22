@@ -8,6 +8,7 @@ import com.example.dto.UserLoginDto;
 import com.example.model.Activity;
 import com.example.services.ActivityService;
 import com.example.services.DynamodbService;
+import com.example.services.cache.CacheService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,10 +25,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class ActivityController {
     private final ActivityService activityService;
     private final DynamodbService dynamodbService;
+    private final CacheService cacheService;
 
-    public ActivityController(ActivityService activityService, DynamodbService dynamodbService) {
+    public ActivityController(
+            ActivityService activityService,
+            DynamodbService dynamodbService,
+            CacheService cacheService) {
         this.activityService = activityService;
         this.dynamodbService = dynamodbService;
+        this.cacheService = cacheService;
     }
 
     @GetMapping("/get/{activityId}")
@@ -123,5 +129,11 @@ public class ActivityController {
             return ResponseEntity.ok(true);
         }
         return ResponseEntity.badRequest().body(false);
+    }
+
+    @GetMapping("/get/tag/{tagId}")
+    public ResponseEntity<List<Activity>> getActivityByTagId(@PathVariable UUID tagId) {
+        List<Activity> res = cacheService.getActivityByTagId(tagId);
+        return ResponseEntity.ok(res);
     }
 }

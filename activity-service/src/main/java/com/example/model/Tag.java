@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,10 +20,7 @@ public class Tag {
     @Column(name = "tag_id", updatable = false, nullable = false)
     private UUID tagId;
 
-    @ManyToMany(
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            mappedBy = "tags")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "tags")
     @JsonIgnore
     private Set<Activity> activities = new HashSet<>();
 
