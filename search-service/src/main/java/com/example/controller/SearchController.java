@@ -21,8 +21,7 @@ public class SearchController {
 
     private final SearchServiceJpa searchServiceJpa;
 
-    public SearchController(
-            SearchServiceJpa searchServiceJpa) {
+    public SearchController(SearchServiceJpa searchServiceJpa) {
         this.searchServiceJpa = searchServiceJpa;
     }
 
@@ -36,7 +35,6 @@ public class SearchController {
         List<Activity> results = searchServiceJpa.searchByActivityName(query);
         return ResponseEntity.ok(results);
     }
-
 
     @GetMapping("/activity-by-location")
     public ResponseEntity<List<Activity>> searchByNearbyLocation(
@@ -59,6 +57,4 @@ public class SearchController {
             throw new RuntimeException(e);
         }
     }
-
-
 }

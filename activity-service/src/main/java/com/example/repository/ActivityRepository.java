@@ -2,7 +2,6 @@ package com.example.repository;
 
 import com.example.model.Activity;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -26,18 +25,16 @@ public interface ActivityRepository extends JpaRepository<Activity, UUID> {
                     + " a.activityId =?1")
     void removeOneParticipant(UUID activityId);
 
-    //Activity findActivityByLocationId(UUID locationId);
+    // Activity findActivityByLocationId(UUID locationId);
 
     @Query(
-        "SELECT a FROM Activity a LEFT JOIN FETCH a.attendees LEFT JOIN FETCH a.tags LEFT JOIN"
-            + " FETCH a.requirements WHERE a.locationId = :locationId")
+            "SELECT a FROM Activity a LEFT JOIN FETCH a.attendees LEFT JOIN FETCH a.tags LEFT JOIN"
+                    + " FETCH a.requirements WHERE a.locationId = :locationId")
     Activity findActivityByLocationId(@Param("locationId") UUID locationId);
 
     @Query(
-        "SELECT DISTINCT a FROM Activity a LEFT JOIN FETCH a.attendees "
-            + "LEFT JOIN FETCH a.tags LEFT JOIN"
-            + " FETCH a.requirements WHERE LOWER(a.name) LIKE %:query%")
+            "SELECT DISTINCT a FROM Activity a LEFT JOIN FETCH a.attendees "
+                    + "LEFT JOIN FETCH a.tags LEFT JOIN"
+                    + " FETCH a.requirements WHERE LOWER(a.name) LIKE %:query%")
     List<Activity> searchByName(@Param("query") String query);
-
-
 }

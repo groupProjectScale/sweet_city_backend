@@ -40,8 +40,10 @@ public class CacheService {
 
     @Around("@annotation(com.example.service.cache.annotations.Cached)")
     public Object cacheSearchResults(ProceedingJoinPoint joinPoint) throws Throwable {
-        Cached annotation = ((MethodSignature) joinPoint.getSignature())
-            .getMethod().getAnnotation(Cached.class);
+        Cached annotation =
+                ((MethodSignature) joinPoint.getSignature())
+                        .getMethod()
+                        .getAnnotation(Cached.class);
         String cacheKey = getCacheKey(joinPoint, annotation.key());
 
         // check if the cache exists
@@ -65,64 +67,68 @@ public class CacheService {
         }
     }
 
-
     @Around("@annotation(com.example.service.cache.annotations.CachedAsync)")
-    public CompletableFuture<List<Activity>>
-        cacheSearchResultsAsync(ProceedingJoinPoint joinPoint) {
-        CachedAsync annotation = ((MethodSignature) joinPoint.getSignature())
-            .getMethod().getAnnotation(CachedAsync.class);
+    public CompletableFuture<List<Activity>> cacheSearchResultsAsync(
+            ProceedingJoinPoint joinPoint) {
+        CachedAsync annotation =
+                ((MethodSignature) joinPoint.getSignature())
+                        .getMethod()
+                        .getAnnotation(CachedAsync.class);
         String cacheKey = getCacheKey(joinPoint, annotation.key());
 
-        RMapCacheAsync<String, String> cache = redissonClient
-            .getMapCache(joinPoint.getSignature().getName());
+        RMapCacheAsync<String, String> cache =
+                redissonClient.getMapCache(joinPoint.getSignature().getName());
 
-        CompletableFuture<String> cachedResultFuture = cache
-            .getAsync(cacheKey).toCompletableFuture();
+        CompletableFuture<String> cachedResultFuture =
+                cache.getAsync(cacheKey).toCompletableFuture();
 
         return cachedResultFuture.thenCompose(
-            cachedResult -> {
-                if (cachedResult != null) {
-                    logger.info("Retrieving result from cacheAsync: " + cacheKey);
-                    cache.sizeAsync()
-                        .thenAccept(
-                            size -> logger.info("the current size of cacheAsync is: " + size));
-                    List<Activity> result;
-                    try {
-                        result = objectMapper.readValue(cachedResult, new TypeReference<>() {
-                        });
-                        return CompletableFuture.completedFuture(result);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
+                cachedResult -> {
+                    if (cachedResult != null) {
+                        logger.info("Retrieving result from cacheAsync: " + cacheKey);
+                        cache.sizeAsync()
+                                .thenAccept(
+                                        size ->
+                                                logger.info(
+                                                        "the current size of cacheAsync is: "
+                                                                + size));
+                        List<Activity> result;
+                        try {
+                            result = objectMapper.readValue(cachedResult, new TypeReference<>() {});
+                            return CompletableFuture.completedFuture(result);
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        try {
+                            CompletableFuture<List<Activity>> result =
+                                    (CompletableFuture<List<Activity>>) joinPoint.proceed();
+                            CompletableFuture<String> jsonResult =
+                                    result.thenApply(
+                                            activityList -> {
+                                                try {
+                                                    return objectMapper.writeValueAsString(
+                                                            activityList);
+                                                } catch (JsonProcessingException e) {
+                                                    return null;
+                                                }
+                                            });
+                            cache.putAsync(
+                                    cacheKey,
+                                    jsonResult.get(),
+                                    CACHE_EXPIRATION_TIME,
+                                    TimeUnit.MINUTES);
+                            logger.info("Saving cachedKey to cacheAsync: " + cacheKey);
+                            logger.info(
+                                    "Currently saving the cacheAsync record: " + jsonResult.get());
+                            return result;
+                        } catch (Throwable e) {
+                            logger.error(e.getMessage());
+                            throw new CompletionException(e);
+                        }
                     }
-                } else {
-                    try {
-                        CompletableFuture<List<Activity>> result =
-                            (CompletableFuture<List<Activity>>) joinPoint.proceed();
-                        CompletableFuture<String> jsonResult =
-                            result.thenApply(
-                                activityList -> {
-                                    try {
-                                        return objectMapper.writeValueAsString(activityList);
-                                    } catch (JsonProcessingException e) {
-                                        return null;
-                                    }
-                                });
-                        cache.putAsync(
-                            cacheKey,
-                            jsonResult.get(),
-                            CACHE_EXPIRATION_TIME,
-                            TimeUnit.MINUTES);
-                        logger.info("Saving cachedKey to cacheAsync: " + cacheKey);
-                        logger.info("Currently saving the cacheAsync record: " + jsonResult.get());
-                        return result;
-                    } catch (Throwable e) {
-                        logger.error(e.getMessage());
-                        throw new CompletionException(e);
-                    }
-                }
-            });
+                });
     }
-
 
     private String getCacheKey(ProceedingJoinPoint joinPoint, String annotationKey) {
         // Get the method signature
@@ -142,5 +148,4 @@ public class CacheService {
         }
         return cacheKey;
     }
-
 }
