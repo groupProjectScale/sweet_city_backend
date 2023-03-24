@@ -1,2 +1,4 @@
 rootProject.name = 'sweet_city_backend'
 include('activity-service')
+include 'search-service'
+
