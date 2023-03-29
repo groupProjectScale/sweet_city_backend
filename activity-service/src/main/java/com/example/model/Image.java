@@ -20,47 +20,13 @@ public class Image {
     @Column(name = "image_id", updatable = false, nullable = false)
     private UUID imageId;
 
-    @Column(name = "file_name", nullable = false)
-    private String fileName;
-
-    @Column(name = "activity_id_plus_file_name", nullable = false)
-    private String activityIdPlusFileName;
-
     @ManyToMany(mappedBy = "images")
     @JsonIgnore
     private Set<Activity> activities = new HashSet<>();
 
     public Image() {}
 
-    public UUID getImageId() {
-        return imageId;
-    }
-
-    public void setImageId(UUID imageId) {
+    public Image(UUID imageId) {
         this.imageId = imageId;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getActivityIdPlusFileName() {
-        return activityIdPlusFileName;
-    }
-
-    public void setActivityIdPlusFileName(String activityIdPlusFileName) {
-        this.activityIdPlusFileName = activityIdPlusFileName;
-    }
-
-    public Set<Activity> getActivities() {
-        return activities;
-    }
-
-    public void setActivities(Set<Activity> activities) {
-        this.activities = activities;
     }
 }

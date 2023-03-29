@@ -10,9 +10,14 @@ import com.example.services.ActivityService;
 import com.example.services.DynamodbService;
 import com.example.services.S3Service;
 import com.example.services.SqsProducerService;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,9 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ActivityController {
     private final ActivityService activityService;
     private final DynamodbService dynamodbService;
-    private final SqsProducerService sqsProducerService;
     private final S3Service s3Service;
-
+    private final Logger logger = LoggerFactory.getLogger(ActivityController.class);
     public ActivityController(
             ActivityService activityService,
             DynamodbService dynamodbService,
@@ -36,7 +40,6 @@ public class ActivityController {
             S3Service s3Service) {
         this.activityService = activityService;
         this.dynamodbService = dynamodbService;
-        this.sqsProducerService = sqsProducerService;
         this.s3Service = s3Service;
     }
 
@@ -74,24 +77,22 @@ public class ActivityController {
     }
 
     @PostMapping("/upload-image/{activityId}")
-    public void uploadFile(
-            @PathVariable(value = "activityId") String activityId,
+    public ResponseEntity<List<UUID>> uploadFile(
+            @PathVariable(value = "activityId") UUID activityId,
             @RequestBody List<String> paths) {
+        List<UUID> images = new ArrayList<>();
         try {
-            if (!activityService.isActivityExist(UUID.fromString(activityId))) {
-                return;
+            if (!activityService.isActivityExist(activityId)) {
+                return ResponseEntity.badRequest().body(null);
             }
             for (String path : paths) {
-                sqsProducerService.sendMessage(activityId, path);
+                UUID res = s3Service.uploadFile(activityId, path);
+                images.add(res);
             }
+            return ResponseEntity.ok(images);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
-    }
-
-    @GetMapping("/download-image/{activityId}/{fileName}")
-    public void downLoadFile(@PathVariable String activityId, @PathVariable String fileName) {
-        s3Service.downloadFile(activityId, fileName);
     }
 
     @PostMapping("/join/{activityId}")

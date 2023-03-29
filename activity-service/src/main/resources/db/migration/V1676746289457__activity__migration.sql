@@ -69,9 +69,7 @@ CREATE TABLE IF NOT EXISTS address(
 );
 
 CREATE TABLE IF NOT EXISTS image(
-    image_id UUID NOT NULL DEFAULT uuid_generate_v4(),
-    file_name VARCHAR(255) NOT NULL,
-    activity_id_plus_file_name VARCHAR(255) NOT NULL,
+    image_id UUID NOT NULL,
     PRIMARY KEY (image_id)
 );
 

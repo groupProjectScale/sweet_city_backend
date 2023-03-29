@@ -11,6 +11,9 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,7 @@ public class SqsConsumerService {
     private S3Service s3Service;
     private ActivityRepository activityRepository;
     private ImageRepository imageRepository;
+    private static final Logger logger = LogManager.getLogger(SqsConsumerService.class);
 
     public SqsConsumerService(
             SqsClient sqsClient,
@@ -64,8 +68,7 @@ public class SqsConsumerService {
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.exit(1);
+            logger.error(e.getMessage());
         }
     }
 
@@ -73,26 +76,15 @@ public class SqsConsumerService {
     public void process(Message msg) {
         String[] body = msg.body().split(" ");
         String activityId = body[0];
-        String path = body[1];
-        String fileName = getFileName(path);
-        String activityIdPlusFileName = activityId + fileName;
-        // filename do not exist in this activity before
-        if (imageRepository.findByActivityIdPlusFileName(activityIdPlusFileName) != null) {
-            return;
-        }
+
         // upload image to s3
-        ImageDto imageDto = s3Service.uploadFile(activityId, path, fileName);
+//        ImageDto imageDto = s3Service.uploadFile(activityId, path, fileName);
         // store image url in postgres
         Activity a = activityRepository.findById(UUID.fromString(activityId)).get();
         Image image = new Image();
-        BeanUtils.copyProperties(imageDto, image);
         image = imageRepository.save(image);
         a.addImages(image);
         activityRepository.save(a);
     }
 
-    private String getFileName(String path) {
-        String[] split = path.split("/");
-        return split[split.length - 1];
-    }
 }

@@ -1,45 +1,55 @@
 package com.example.services;
 
 import com.example.configurations.S3Configuration;
-import com.example.dto.ImageDto;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.UUID;
+
+import com.example.dto.ActivityImageDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.awscore.exception.AwsServiceException;
-import software.amazon.awssdk.core.ResponseInputStream;
-import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
+
 
 @Service
 public class S3Service {
     private final String BUCKET;
     private S3Client s3Client;
+    private SqsProducerService sqsProducerService;
     private final String endpointUrl;
+    private ObjectMapper objectMapper;
+    private static final Logger logger = LogManager.getLogger(S3Service.class);
 
-    public S3Service(S3Client s3Client, S3Configuration s3Configuration) {
+    public S3Service(S3Client s3Client, S3Configuration s3Configuration,
+                     SqsProducerService sqsProducerService,
+                     ObjectMapper objectMapper) {
         this.s3Client = s3Client;
         this.BUCKET = s3Configuration.Bucket();
         this.endpointUrl = s3Configuration.getEndpointUrl();
+        this.sqsProducerService = sqsProducerService;
+        this.objectMapper = objectMapper;
     }
 
-    public ImageDto uploadFile(String activityId, String path, String fileName) {
+    public UUID uploadFile(UUID acticityId, String path) {
         try {
-            String key = "/" + activityId + "/" + fileName;
+            UUID imageId = UUID.randomUUID();
+            String key = imageId.toString();
             PutObjectRequest request = PutObjectRequest.builder().bucket(BUCKET).key(key).build();
 
             s3Client.putObject(request, RequestBody.fromBytes(getObjectFile(path)));
-            return new ImageDto(fileName, endpointUrl + "/" + BUCKET + key, activityId + fileName);
-        } catch (S3Exception e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
+
+            String jsonRes = objectMapper.writeValueAsString(new ActivityImageDto(acticityId, imageId));
+            sqsProducerService.sendMessage(jsonRes);
+            return imageId;
+        } catch (Exception e) {
+            logger.info(e.getMessage());
         }
         return null;
     }
@@ -62,7 +72,7 @@ public class S3Service {
                 try {
                     fileInputStream.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.info(e.getMessage());
                 }
             }
         }
@@ -70,29 +80,4 @@ public class S3Service {
         return bytesArray;
     }
 
-    public void downloadFile(String activityId, String fileName) {
-        try {
-            String path = "/" + activityId + "/" + fileName;
-            GetObjectRequest req = GetObjectRequest.builder().bucket(BUCKET).key(path).build();
-            ResponseInputStream<GetObjectResponse> response = s3Client.getObject(req);
-            BufferedOutputStream outputStream =
-                    new BufferedOutputStream(new FileOutputStream(fileName));
-
-            byte[] buffer = new byte[4096];
-            int bytesRead = -1;
-
-            while ((bytesRead = response.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-            response.close();
-            outputStream.close();
-        } catch (AwsServiceException e) {
-            e.printStackTrace();
-        } catch (SdkClientException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
