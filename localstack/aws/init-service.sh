@@ -20,7 +20,6 @@ awslocal dynamodb create-table \
 
 # Wait for the participants state table to be created before proceeding
 awslocal dynamodb wait table-exists --table-name $PARTICIPANTS_STATE_TABLE_NAME
-
 # Create the live participants table with a primary key and a global secondary index
 awslocal dynamodb create-table \
   --table-name $LIVE_PARTICIPANTS_TABLE_NAME \
@@ -47,4 +46,6 @@ awslocal dynamodb put-item \
   --item '{"activity_uuid": {"S": "activity1"}, "number_of_participants": {"N": "2"}}'
 
 awslocal s3 mb s3://sweet-city-storage
+awslocal s3api wait bucket-exists --bucket sweet-city-storage
 awslocal sqs create-queue --queue-name activity-sqs
+awslocal sqs wait queue-exists --queue-url http://localhost:4566/000000000000/activity-sqs

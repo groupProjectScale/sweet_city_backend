@@ -48,7 +48,7 @@ public class S3Service {
             try {
                 res.add(future.get()); // wait for result of future
             } catch (InterruptedException | ExecutionException e) {
-                logger.info(e.getMessage());
+                logger.error(e.getMessage());
             }
         }
         return res;
@@ -78,7 +78,7 @@ public class S3Service {
                                     sqsProducerService.sendMessage(json);
                                     return key;
                                 } catch (Exception e) {
-                                    logger.info(e.getMessage());
+                                    logger.error(e.getMessage());
                                     return null;
                                 }
                             });
@@ -101,13 +101,13 @@ public class S3Service {
             fileInputStream.read(bytesArray);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } finally {
             if (fileInputStream != null) {
                 try {
                     fileInputStream.close();
                 } catch (IOException e) {
-                    logger.info(e.getMessage());
+                    logger.error(e.getMessage());
                 }
             }
         }
