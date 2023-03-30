@@ -54,16 +54,16 @@ public class Activity {
     private Integer maximumParticipants;
 
     @ManyToMany(
-            fetch = FetchType.EAGER,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.ALL})
     @JoinTable(
             name = "activity_requirement",
             joinColumns = @JoinColumn(name = "activity_id"),
             inverseJoinColumns = @JoinColumn(name = "requirement_id"))
-    @JsonIgnore
+//    @JsonIgnore
     private final Set<Requirement> requirements = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "activity_tag",
             joinColumns = @JoinColumn(name = "activity_id"),
@@ -72,8 +72,8 @@ public class Activity {
     private final Set<Tag> tags = new HashSet<>();
 
     @ManyToMany(
-            fetch = FetchType.EAGER,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.ALL})
     @JoinTable(
             name = "activity_attendee",
             joinColumns = @JoinColumn(name = "activity_id"),

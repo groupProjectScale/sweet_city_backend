@@ -38,20 +38,16 @@ services:
 
   # redis cluster set up
   redis-cluster:
-    image: grokzen/redis-cluster:6.2.8
+    image: bitnami/redis:latest
     environment:
-      INITIAL_PORT: '7001'
-      IP: '0.0.0.0'
-      CLUSTER_ONLY: 'true'
+      - REDIS_PORT_NUMBER=7001
+      - REDIS_CLUSTER_ENABLED=yes
+      - REDIS_CLUSTER_REPLICAS=0
+      - ALLOW_EMPTY_PASSWORD=yes
     ports:
-      - '7001-7011:7001-7011'
-    deploy:
-      resources:
-        reservations:
-          memory: 128M
-        limits:
-          memory: 512M
-          cpus: '1'
+      - "7001-7006:7001-7006"
+    networks:
+      - backend
 
 volumes:
   metadata_data: {}
