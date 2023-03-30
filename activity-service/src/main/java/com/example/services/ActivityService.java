@@ -55,7 +55,7 @@ public class ActivityService {
     }
 
     public Optional<Activity> getActivityById(UUID activityId) {
-        //test
+        // test
         Optional<Activity> activity = activityRepository.findById(activityId);
         return activity;
     }
