@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS address(
 
 CREATE TABLE IF NOT EXISTS image(
     image_id UUID NOT NULL,
+    url VARCHAR(255) NOT NULL,
     PRIMARY KEY (image_id)
 );
 

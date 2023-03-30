@@ -1,7 +1,6 @@
 # Define variables for table name and attribute names
 PARTICIPANTS_STATE_TABLE_NAME="participants_state_table"
 LIVE_PARTICIPANTS_TABLE_NAME="live_participants_table"
-
 USER_ID_ATTRIBUTE_NAME="user_uuid"
 ACTIVITY_UUID_ATTRIBUTE_NAME="activity_uuid"
 STATE_ATTRIBUTE_NAME="participant_state"

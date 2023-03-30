@@ -23,14 +23,10 @@ public class SqsProducerService {
         this.queueUrl = sqsClient.getQueueUrl(getQueueRequest).queueUrl();
     }
 
-    public void sendMessage(String activityId) {
-        System.out.println("send Message");
+    public void sendMessage(String json) {
         try {
             SendMessageRequest sendMsgRequest =
-                    SendMessageRequest.builder()
-                            .queueUrl(queueUrl)
-                            .messageBody(activityId + " " + path)
-                            .build();
+                    SendMessageRequest.builder().queueUrl(queueUrl).messageBody(json).build();
             sqsClient.sendMessage(sendMsgRequest);
 
         } catch (SqsException e) {

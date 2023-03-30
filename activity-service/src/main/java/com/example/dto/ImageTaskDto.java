@@ -1,21 +1,21 @@
 package com.example.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.util.UUID;
 
 /** The type ActivityImage dto. */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ActivityImageDto {
+public class ImageTaskDto {
     private UUID activityId;
     private UUID imageId;
+    private String url;
 
-    public ActivityImageDto() {
-    }
+    public ImageTaskDto() {}
 
-    public ActivityImageDto(UUID activityId, UUID imageId) {
+    public ImageTaskDto(UUID activityId, UUID imageId, String url) {
         this.activityId = activityId;
         this.imageId = imageId;
+        this.url = url;
     }
 
     public UUID getActivityId() {
@@ -32,5 +32,13 @@ public class ActivityImageDto {
 
     public void setImageId(UUID imageId) {
         this.imageId = imageId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

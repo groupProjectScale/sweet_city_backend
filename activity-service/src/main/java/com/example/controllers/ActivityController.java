@@ -9,13 +9,9 @@ import com.example.model.Activity;
 import com.example.services.ActivityService;
 import com.example.services.DynamodbService;
 import com.example.services.S3Service;
-import com.example.services.SqsProducerService;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -33,11 +29,9 @@ public class ActivityController {
     private final DynamodbService dynamodbService;
     private final S3Service s3Service;
     private final Logger logger = LoggerFactory.getLogger(ActivityController.class);
+
     public ActivityController(
-            ActivityService activityService,
-            DynamodbService dynamodbService,
-            SqsProducerService sqsProducerService,
-            S3Service s3Service) {
+            ActivityService activityService, DynamodbService dynamodbService, S3Service s3Service) {
         this.activityService = activityService;
         this.dynamodbService = dynamodbService;
         this.s3Service = s3Service;
@@ -77,22 +71,18 @@ public class ActivityController {
     }
 
     @PostMapping("/upload-image/{activityId}")
-    public ResponseEntity<List<UUID>> uploadFile(
-            @PathVariable(value = "activityId") UUID activityId,
-            @RequestBody List<String> paths) {
-        List<UUID> images = new ArrayList<>();
+    public ResponseEntity<List<String>> uploadFile(
+            @PathVariable(value = "activityId") UUID activityId, @RequestBody List<String> paths) {
         try {
             if (!activityService.isActivityExist(activityId)) {
                 return ResponseEntity.badRequest().body(null);
             }
-            for (String path : paths) {
-                UUID res = s3Service.uploadFile(activityId, path);
-                images.add(res);
-            }
-            return ResponseEntity.ok(images);
+            List<String> res = s3Service.uploadFile(activityId, paths);
+            return ResponseEntity.ok(res);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+        return ResponseEntity.badRequest().body(null);
     }
 
     @PostMapping("/join/{activityId}")

@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
@@ -16,9 +15,11 @@ import javax.persistence.Table;
 @Table(name = "image")
 public class Image {
     @Id
-    @GeneratedValue(generator = "UUID")
     @Column(name = "image_id", updatable = false, nullable = false)
     private UUID imageId;
+
+    @Column(name = "url", nullable = false)
+    private String url;
 
     @ManyToMany(mappedBy = "images")
     @JsonIgnore
@@ -26,7 +27,32 @@ public class Image {
 
     public Image() {}
 
-    public Image(UUID imageId) {
+    public Image(UUID imageId, String url) {
         this.imageId = imageId;
+        this.url = url;
+    }
+
+    public UUID getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(UUID imageId) {
+        this.imageId = imageId;
+    }
+
+    public Set<Activity> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(Set<Activity> activities) {
+        this.activities = activities;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
