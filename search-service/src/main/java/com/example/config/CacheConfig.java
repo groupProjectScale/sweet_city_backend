@@ -11,6 +11,7 @@ public class CacheConfig {
 
     @Bean
     public RedissonClient redissonClient() {
+        // test
         Config config = new Config();
         config.useSingleServer().setAddress("redis://localhost:7001").setPassword("yourpassword");
         return Redisson.create(config);
