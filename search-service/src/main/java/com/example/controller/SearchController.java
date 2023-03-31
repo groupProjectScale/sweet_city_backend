@@ -5,7 +5,6 @@ import com.example.model.Activity;
 import com.example.service.SearchServiceJpa;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -37,24 +36,21 @@ public class SearchController {
     }
 
     @GetMapping("/activity-by-location")
-    public ResponseEntity<List<Activity>> searchByNearbyLocation(
+    public CompletableFuture<ResponseEntity<List<Activity>>> searchByNearbyLocation(
             @RequestBody SearchRangeDto searchRangeDto) {
         if (searchRangeDto == null) {
-            return ResponseEntity.badRequest().body(null);
+            return CompletableFuture.completedFuture(ResponseEntity.badRequest().body(null));
         }
 
-        CompletableFuture<List<Activity>> results =
-                searchServiceJpa.searchByNearbyLocation(
+        return searchServiceJpa
+                .searchByNearbyLocation(
                         searchRangeDto.getLongitude(),
                         searchRangeDto.getLatitude(),
-                        searchRangeDto.getRadius());
-
-        try {
-            return ResponseEntity.ok().body(results.get());
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+                        searchRangeDto.getRadius())
+                .thenApply(ResponseEntity::ok)
+                .exceptionally(
+                        ex -> {
+                            throw new RuntimeException(ex);
+                        });
     }
 }
