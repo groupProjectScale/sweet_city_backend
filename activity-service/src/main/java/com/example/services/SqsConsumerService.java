@@ -26,22 +26,20 @@ public class SqsConsumerService {
     private final ScheduledExecutorService sqsExecutors = Executors.newScheduledThreadPool(8);
     private SqsClient sqsClient;
     private String queueUrl;
-    private ObjectMapper objectMapper;
     private ActivityRepository activityRepository;
     private ImageRepository imageRepository;
+    private ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = LogManager.getLogger(SqsConsumerService.class);
 
     public SqsConsumerService(
             SqsClient sqsClient,
             ActivityRepository activityRepository,
             ImageRepository imageRepository,
-            ObjectMapper objectMapper,
             SqsConfiguration sqsConfiguration) {
         this.sqsClient = sqsClient;
         this.queueUrl = sqsConfiguration.queueUrl();
         this.activityRepository = activityRepository;
         this.imageRepository = imageRepository;
-        this.objectMapper = objectMapper;
         initSqsPoller();
     }
 

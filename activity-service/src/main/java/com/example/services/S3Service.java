@@ -26,20 +26,18 @@ public class S3Service {
     private final String ENDPOINT;
     private S3Client s3Client;
     private SqsProducerService sqsProducerService;
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper = new ObjectMapper();
     private final ExecutorService executorService = Executors.newFixedThreadPool(5);
     private static final Logger logger = LogManager.getLogger(S3Service.class);
 
     public S3Service(
             S3Client s3Client,
             S3Configuration s3Configuration,
-            SqsProducerService sqsProducerService,
-            ObjectMapper objectMapper) {
+            SqsProducerService sqsProducerService) {
         this.s3Client = s3Client;
         this.BUCKET = s3Configuration.Bucket();
         this.ENDPOINT = s3Configuration.getEndpointUrl();
         this.sqsProducerService = sqsProducerService;
-        this.objectMapper = objectMapper;
     }
 
     @Transactional
