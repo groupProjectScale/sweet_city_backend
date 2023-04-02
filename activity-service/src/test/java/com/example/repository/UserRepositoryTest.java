@@ -1,13 +1,6 @@
 package com.example.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.example.BaseTest;
-import com.example.model.User;
-import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserRepositoryTest extends BaseTest {
 
