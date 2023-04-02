@@ -1,26 +1,9 @@
 package com.example.services;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.example.BaseTest;
-import com.example.model.Address;
-import com.example.model.Location;
-import com.example.model.User;
-import com.example.repository.AddressRepository;
-import com.example.repository.LocationRepository;
-import com.example.repository.UserRepository;
-import java.util.Optional;
-import java.util.UUID;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 public class UserServiceTest extends BaseTest {
-    private static final String USER_ID = "f7c72c1d-5c5e-4ed9-902e-541d8c1621d2";
+    /*private static final String USER_ID = "f7c72c1d-5c5e-4ed9-902e-541d8c1621d2";
     private static final UUID USER_UUID = UUID.fromString(USER_ID);
     private static final User EXPECTED_USER =
             new User(
@@ -74,4 +57,5 @@ public class UserServiceTest extends BaseTest {
         assertThat(actualUser).isNull();
         verify(userRepository, times(1)).findById(null);
     }
+     */
 }

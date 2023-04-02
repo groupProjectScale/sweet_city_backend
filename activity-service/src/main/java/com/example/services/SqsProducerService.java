@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsClient;
-import software.amazon.awssdk.services.sqs.model.GetQueueUrlRequest;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 import software.amazon.awssdk.services.sqs.model.SqsException;
 
@@ -17,10 +16,8 @@ public class SqsProducerService {
 
     public SqsProducerService(SqsClient sqsClient, SqsConfiguration sqsConfiguration) {
         this.sqsClient = sqsClient;
-        GetQueueUrlRequest getQueueRequest =
-                GetQueueUrlRequest.builder().queueName(sqsConfiguration.queueName()).build();
-
-        this.queueUrl = sqsClient.getQueueUrl(getQueueRequest).queueUrl();
+        this.queueUrl = sqsConfiguration.queueUrl();
+        ;
     }
 
     public void sendMessage(String json) {

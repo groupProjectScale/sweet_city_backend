@@ -17,7 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsClient;
-import software.amazon.awssdk.services.sqs.model.GetQueueUrlRequest;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 import software.amazon.awssdk.services.sqs.model.SqsException;
@@ -39,9 +38,7 @@ public class SqsConsumerService {
             ObjectMapper objectMapper,
             SqsConfiguration sqsConfiguration) {
         this.sqsClient = sqsClient;
-        GetQueueUrlRequest getQueueRequest =
-                GetQueueUrlRequest.builder().queueName(sqsConfiguration.queueName()).build();
-        this.queueUrl = sqsClient.getQueueUrl(getQueueRequest).queueUrl();
+        this.queueUrl = sqsConfiguration.queueUrl();
         this.activityRepository = activityRepository;
         this.imageRepository = imageRepository;
         this.objectMapper = objectMapper;
@@ -66,7 +63,7 @@ public class SqsConsumerService {
             }
 
         } catch (SqsException e) {
-            logger.info(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 

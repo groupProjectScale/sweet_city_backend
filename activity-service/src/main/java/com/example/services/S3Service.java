@@ -9,13 +9,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -27,6 +27,7 @@ public class S3Service {
     private S3Client s3Client;
     private SqsProducerService sqsProducerService;
     private ObjectMapper objectMapper;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(5);
     private static final Logger logger = LogManager.getLogger(S3Service.class);
 
     public S3Service(
@@ -41,52 +42,30 @@ public class S3Service {
         this.objectMapper = objectMapper;
     }
 
-    public List<String> uploadFile(UUID activityId, List<String> paths) {
-        List<Future<String>> futures = uploadImagesConcurrently(activityId, paths);
-        List<String> res = new ArrayList<>();
-        for (Future<String> future : futures) {
-            try {
-                res.add(future.get()); // wait for result of future
-            } catch (InterruptedException | ExecutionException e) {
-                logger.error(e.getMessage());
-            }
-        }
-        return res;
-    }
+    @Transactional
+    public Future<List<String>> uploadFileAsync(UUID activityId, List<String> paths) {
+        return executorService.submit(
+                () -> {
+                    List<String> res = new ArrayList<>();
+                    try {
+                        for (String path : paths) {
+                            String key = UUID.randomUUID().toString();
+                            PutObjectRequest request =
+                                    PutObjectRequest.builder().bucket(BUCKET).key(key).build();
+                            s3Client.putObject(request, RequestBody.fromBytes(getObjectFile(path)));
 
-    public List<Future<String>> uploadImagesConcurrently(UUID activityId, List<String> paths) {
-        ExecutorService executorService = Executors.newFixedThreadPool(paths.size());
-        List<Future<String>> futureList = new ArrayList<>();
-        for (String path : paths) {
-            Future<String> future =
-                    executorService.submit(
-                            () -> {
-                                try {
-                                    String key = UUID.randomUUID().toString();
-                                    PutObjectRequest request =
-                                            PutObjectRequest.builder()
-                                                    .bucket(BUCKET)
-                                                    .key(key)
-                                                    .build();
-                                    s3Client.putObject(
-                                            request, RequestBody.fromBytes(getObjectFile(path)));
-
-                                    String url = String.format("%s/%s/%s", ENDPOINT, BUCKET, key);
-                                    ImageTaskDto imageTaskDto =
-                                            new ImageTaskDto(activityId, UUID.fromString(key), url);
-                                    String json = objectMapper.writeValueAsString(imageTaskDto);
-                                    sqsProducerService.sendMessage(json);
-                                    return key;
-                                } catch (Exception e) {
-                                    logger.error(e.getMessage());
-                                    return null;
-                                }
-                            });
-            futureList.add(future);
-        }
-        // shut down executor
-        executorService.shutdown();
-        return futureList;
+                            String url = String.format("%s/%s/%s", ENDPOINT, BUCKET, key);
+                            ImageTaskDto imageTaskDto =
+                                    new ImageTaskDto(activityId, UUID.fromString(key), url);
+                            String json = objectMapper.writeValueAsString(imageTaskDto);
+                            sqsProducerService.sendMessage(json);
+                            res.add(key);
+                        }
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
+                    }
+                    return res;
+                });
     }
 
     private static byte[] getObjectFile(String filePath) {

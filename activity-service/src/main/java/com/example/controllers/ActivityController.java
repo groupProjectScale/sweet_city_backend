@@ -12,6 +12,8 @@ import com.example.services.S3Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -74,11 +76,11 @@ public class ActivityController {
     public ResponseEntity<List<String>> uploadFile(
             @PathVariable(value = "activityId") UUID activityId, @RequestBody List<String> paths) {
         try {
-            if (!activityService.isActivityExist(activityId)) {
-                return ResponseEntity.badRequest().body(null);
+            if (activityService.isActivityExist(activityId)) {
+                Future<List<String>> future = s3Service.uploadFileAsync(activityId, paths);
+                List<String> res = future.get(30, TimeUnit.SECONDS);
+                return ResponseEntity.ok(res);
             }
-            List<String> res = s3Service.uploadFile(activityId, paths);
-            return ResponseEntity.ok(res);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

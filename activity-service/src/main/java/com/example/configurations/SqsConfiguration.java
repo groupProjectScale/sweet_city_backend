@@ -14,15 +14,15 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 @Configuration
 public class SqsConfiguration {
 
-    @Value("${amazon.s3.endpointUrl}") private String endpointUrl;
+    @Value("${amazon.sqs.endpointUrl}") private String endpointUrl;
 
-    @Value("${amazon.s3.accesskey}") private String accessKey;
+    @Value("${amazon.sqs.accesskey}") private String accessKey;
 
-    @Value("${amazon.s3.region}") private String region;
+    @Value("${amazon.sqs.region}") private String region;
 
-    @Value("${amazon.s3.secretkey}") private String secretKey;
+    @Value("${amazon.sqs.secretkey}") private String secretKey;
 
-    private String queueName = "activity-sqs";
+    @Value("${amazon.sqs.queueUrl}") private String queueUrl;
 
     @Bean
     public SqsClient sqsClient() {
@@ -36,7 +36,7 @@ public class SqsConfiguration {
     }
 
     @Bean
-    public String queueName() {
-        return queueName;
+    public String queueUrl() {
+        return queueUrl;
     }
 }
