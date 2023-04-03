@@ -36,6 +36,12 @@ public class Tag {
 
     public Tag() {}
 
+    public Tag(UUID tagId, String tagDescription, Integer numOfCreations) {
+        this.tagId = tagId;
+        this.tagDescription = tagDescription;
+        this.numOfCreations = numOfCreations;
+    }
+
     public UUID getTagId() {
         return tagId;
     }

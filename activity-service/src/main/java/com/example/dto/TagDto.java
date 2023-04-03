@@ -9,6 +9,10 @@ public class TagDto {
 
     public TagDto() {}
 
+    public TagDto(String tagDescription) {
+        this.tagDescription = tagDescription;
+    }
+
     public String getTagDescription() {
         return tagDescription;
     }
