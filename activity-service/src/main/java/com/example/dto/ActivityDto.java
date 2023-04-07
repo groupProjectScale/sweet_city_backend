@@ -26,6 +26,15 @@ public class ActivityDto {
 
     private Integer maximumParticipants;
 
+    public ActivityDto() {}
+
+    public ActivityDto(String name, UUID creatorId, Timestamp startTime, Timestamp endTime) {
+        this.name = name;
+        this.creatorId = creatorId;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
     /**
      * Gets name.
      *

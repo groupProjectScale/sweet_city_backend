@@ -8,9 +8,14 @@ import com.example.dto.UserLoginDto;
 import com.example.model.Activity;
 import com.example.services.ActivityService;
 import com.example.services.DynamodbService;
+import com.example.services.S3Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,10 +29,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ActivityController {
     private final ActivityService activityService;
     private final DynamodbService dynamodbService;
+    private final S3Service s3Service;
+    private final Logger logger = LoggerFactory.getLogger(ActivityController.class);
 
-    public ActivityController(ActivityService activityService, DynamodbService dynamodbService) {
+    public ActivityController(
+            ActivityService activityService, DynamodbService dynamodbService, S3Service s3Service) {
         this.activityService = activityService;
         this.dynamodbService = dynamodbService;
+        this.s3Service = s3Service;
     }
 
     @GetMapping("/get/{activityId}")
@@ -43,7 +52,6 @@ public class ActivityController {
     }
 
     @PostMapping("/create")
-    // TODO, For Test Only
     public ResponseEntity<Activity> createActivity(@RequestBody ActivityDto activityDto) {
         Activity activity = activityService.addActivity(activityDto);
         return ResponseEntity.ok(activity);
@@ -62,6 +70,21 @@ public class ActivityController {
             @RequestBody RequirementDto requirementDto) {
         boolean res = activityService.addRequirementForActivity(activityId, requirementDto);
         return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/upload-image/{activityId}")
+    public ResponseEntity<List<String>> uploadFile(
+            @PathVariable(value = "activityId") UUID activityId, @RequestBody List<String> paths) {
+        try {
+            if (activityService.isActivityExist(activityId)) {
+                Future<List<String>> future = s3Service.uploadFileAsync(activityId, paths);
+                List<String> res = future.get(30, TimeUnit.SECONDS);
+                return ResponseEntity.ok(res);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        return ResponseEntity.badRequest().body(null);
     }
 
     @PostMapping("/join/{activityId}")

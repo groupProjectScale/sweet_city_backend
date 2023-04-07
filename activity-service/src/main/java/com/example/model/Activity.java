@@ -79,7 +79,23 @@ public class Activity {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private final Set<User> attendees = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "activity_image",
+            joinColumns = @JoinColumn(name = "activity_id"),
+            inverseJoinColumns = @JoinColumn(name = "image_id"))
+    private final Set<Image> images = new HashSet<>();
+
     public Activity() {}
+
+    public Activity(
+            UUID activityId, String name, UUID creatorId, Timestamp startTime, Timestamp endTime) {
+        this.activityId = activityId;
+        this.name = name;
+        this.creatorId = creatorId;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 
     /**
      * Add attendee.
@@ -318,5 +334,14 @@ public class Activity {
     public void addRequirements(Requirement requirement) {
         this.getRequirements().add(requirement);
         requirement.getActivities().add(this);
+    }
+
+    public Set<Image> getImages() {
+        return images;
+    }
+
+    public void addImages(Image image) {
+        this.getImages().add(image);
+        image.getActivities().add(this);
     }
 }

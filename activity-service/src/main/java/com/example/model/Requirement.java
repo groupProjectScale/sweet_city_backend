@@ -32,6 +32,11 @@ public class Requirement {
 
     public Requirement() {}
 
+    public Requirement(UUID requirementId, String description) {
+        this.requirementId = requirementId;
+        this.description = description;
+    }
+
     public UUID getRequirementId() {
         return requirementId;
     }

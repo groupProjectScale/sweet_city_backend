@@ -8,6 +8,10 @@ public class RequirementDto {
 
     public RequirementDto() {}
 
+    public RequirementDto(String description) {
+        this.description = description;
+    }
+
     public String getDescription() {
         return description;
     }

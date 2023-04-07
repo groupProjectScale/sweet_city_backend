@@ -18,6 +18,7 @@ import com.example.repository.LocationRepository;
 import com.example.repository.RequirementRepository;
 import com.example.repository.TagRepository;
 import com.example.repository.UserRepository;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -104,7 +105,28 @@ public class ActivityService {
     }
 
     private boolean validateActivity(ActivityDto activityDto) {
-        // TODO
+        String name = activityDto.getName();
+        UUID userId = activityDto.getCreatorId();
+        Timestamp startTime = activityDto.getStartTime();
+        Timestamp endTime = activityDto.getEndTime();
+        // 1. activityDto must contain: activityName, creator, startTime, endTime
+        if (name == null || userId == null || startTime == null || endTime == null) {
+            return false;
+        }
+        // 1. check creator: must be user
+        Optional<User> u = userRepository.findById(userId);
+        if (u.isEmpty()) {
+            return false;
+        }
+        // 2. check time: activity endTime > startTime && startTime > now
+        if (startTime.after(endTime)
+                || startTime.before(new Timestamp(System.currentTimeMillis()))) {
+            return false;
+        }
+        // 3. check activityName
+        if (name.length() <= 2) {
+            return false;
+        }
         return true;
     }
 
@@ -230,5 +252,13 @@ public class ActivityService {
 
     public int getNumberOfCreationsForTag(String tagId) {
         return tagRepository.getNumberOfCreationsForTag(tagId);
+    }
+
+    public boolean isActivityExist(UUID activityId) {
+        Optional<Activity> activity = activityRepository.findById(activityId);
+        if (activity.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 }
