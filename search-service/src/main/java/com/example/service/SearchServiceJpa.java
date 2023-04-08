@@ -101,4 +101,15 @@ public class SearchServiceJpa {
 
         return activities;
     }
+
+    public List<Activity> searchByTags(List<String> tagNames) {
+        return activityRepository.findByAllTags(tagNames);
+    }
+
+    @Cached
+    @Transactional
+    public List<Activity> getActivityByTagId(UUID tagId) {
+        List<Activity> result = activityRepository.findActivitiesByTagId(tagId);
+        return result;
+    }
 }
