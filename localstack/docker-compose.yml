@@ -1,4 +1,4 @@
-version: "2"
+version: "3"
 services:
   # aws local deployment
   localstack:
@@ -33,6 +33,19 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=sweetcity_PSQL
+    networks:
+      - backend
+
+  redis-cluster:
+    image: bitnami/redis:latest
+    environment:
+      - REDIS_PORT_NUMBER=7001
+      - REDIS_PASSWORD=yourpassword
+      - REDIS_CLUSTER_ENABLED=yes
+      - REDIS_CLUSTER_REPLICAS=0
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "7001-7006:7001-7006"
     networks:
       - backend
 
