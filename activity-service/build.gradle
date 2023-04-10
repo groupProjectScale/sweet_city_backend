@@ -34,6 +34,8 @@ dependencies {
     implementation(libs.dynamoDB)
     implementation(libs.awsS3)
     implementation(libs.awsSqs)
+    implementation(libs.kafka)
+    implementation(libs.cassandra)
     runtimeOnly(libsRuntimeOnly.postgresql)
 
     testImplementation(libsTest.springbootStarterTest)

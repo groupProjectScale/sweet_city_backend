@@ -8,6 +8,7 @@ import com.example.dto.TagDto;
 import com.example.dto.UserLoginDto;
 import com.example.model.Activity;
 import com.example.model.Address;
+import com.example.model.Heartbeat;
 import com.example.model.Location;
 import com.example.model.Requirement;
 import com.example.model.Tag;
@@ -25,6 +26,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import com.example.services.kafka.KafkaProducer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +44,10 @@ public class ActivityService {
     private final TagRepository tagRepository;
     private final RequirementRepository requirementRepository;
     private final LocationRepository locationRepository;
+    private final String SERVICE_NAME = "activity";
     private static final int RANKING = 5;
+    private KafkaProducer kafkaProducer;
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public ActivityService(
             ActivityRepository activityRepository,
@@ -46,13 +55,25 @@ public class ActivityService {
             AddressRepository addressRepository,
             LocationRepository locationRepository,
             TagRepository tagRepository,
-            RequirementRepository requirementRepository) {
+            RequirementRepository requirementRepository,
+            KafkaProducer kafkaProducer) {
         this.activityRepository = activityRepository;
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.locationRepository = locationRepository;
         this.tagRepository = tagRepository;
         this.requirementRepository = requirementRepository;
+        this.kafkaProducer = kafkaProducer;
+        this.sendHeartBeat();
+    }
+
+    private void sendHeartBeat() {
+        scheduler.scheduleAtFixedRate(this::sendMessages, 0, 1000, TimeUnit.MILLISECONDS);
+    }
+
+    private void sendMessages() {
+        Heartbeat heartbeat = new Heartbeat(SERVICE_NAME, true, System.currentTimeMillis());
+        kafkaProducer.sendHeartbeat(heartbeat);
     }
 
     public Optional<Activity> getActivityById(UUID activityId) {
