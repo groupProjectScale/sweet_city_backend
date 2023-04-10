@@ -4,11 +4,13 @@ import com.example.dto.SearchRangeDto;
 import com.example.model.Activity;
 import com.example.service.SearchServiceJpa;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,5 +54,17 @@ public class SearchController {
                         ex -> {
                             throw new RuntimeException(ex);
                         });
+    }
+
+    @GetMapping("tags")
+    public ResponseEntity<List<Activity>> searchByTags(@RequestParam List<String> tags) {
+        List<Activity> activities = searchServiceJpa.searchByTags(tags);
+        return ResponseEntity.ok(activities);
+    }
+
+    @GetMapping("/get/tag/{tagId}")
+    public ResponseEntity<List<Activity>> getActivityByTagId(@PathVariable UUID tagId) {
+        List<Activity> res = searchServiceJpa.getActivityByTagId(tagId);
+        return ResponseEntity.ok(res);
     }
 }
