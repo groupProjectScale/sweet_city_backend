@@ -20,7 +20,9 @@ import org.testcontainers.utility.DockerImageName;
 
 /** Base class for all test classes that require a PostgreSQL database container. */
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.NONE,
+        classes = ActivityServiceApplication.class)
 @Testcontainers
 public abstract class BaseTest {
     private static final Logger LOG = LoggerFactory.getLogger(BaseTest.class);

@@ -1,4 +1,4 @@
-version: "2"
+version: "3"
 services:
   # aws local deployment
   localstack:
@@ -169,6 +169,21 @@ services:
     volumes:
       - ./cassandra/cassandra_schema.cql:/schema.cql
     command: /bin/bash -c "sleep 60 && echo loading cassandra keyspace && cqlsh cassandra -f /schema.cql"
+
+  redis-cluster:
+    image: bitnami/redis:latest
+    environment:
+      - REDIS_PORT_NUMBER=7001
+      - REDIS_PASSWORD=yourpassword
+      - REDIS_CLUSTER_ENABLED=yes
+      - REDIS_CLUSTER_REPLICAS=0
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "7001-7006:7001-7006"
+    networks:
+      - backend
+
+
 
 volumes:
   metadata_data: {}
