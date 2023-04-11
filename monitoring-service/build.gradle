@@ -3,8 +3,9 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id "com.diffplug.spotless" version "6.11.0"
+    id 'com.google.protobuf' version '0.8.16'
+    id 'idea'
 }
-
 
 group 'org.example'
 version '1.0-SNAPSHOT'
@@ -17,8 +18,6 @@ repositories {
 }
 
 dependencies {
-
-    implementation project(":activity-service")
     implementation(libs.springbootStarter)
     implementation(libs.springWeb)
     implementation(libs.springbootStarterWeb)
@@ -31,8 +30,8 @@ dependencies {
     implementation(libs.jpa)
     implementation(libs.log4jApi)
     implementation(libs.log4jCore)
-    implementation(libs.dynamoDB)
-    implementation(libs.redisson)
+    implementation(libs.kafka)
+    implementation(libs.cassandra)
     implementation(libs.grpc)
     implementation(libs.protobuf)
     implementation(libs.grpcStub)
@@ -45,8 +44,7 @@ dependencies {
     testRuntimeOnly(libsRuntimeOnly.jupiterEngine)
 }
 
-
-tasks.named('test') {
+test {
     useJUnitPlatform()
 }
 
@@ -68,5 +66,21 @@ spotless {
 
         // fix formatting of type annotations
         formatAnnotations()
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.17.3'
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.39.0'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
     }
 }

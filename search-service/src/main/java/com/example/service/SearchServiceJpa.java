@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.model.Activity;
+import com.example.model.Heartbeat;
 import com.example.model.Location;
 import com.example.repository.ActivityRepository;
 import com.example.repository.LocationRepository;
@@ -16,6 +17,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +32,8 @@ public class SearchServiceJpa {
     private final LocationRepository locationRepository;
     private final ActivityRepository activityRepository;
     private final DynamodbService dynamodbService;
-
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final String SERVICE_NAME = "search";
     private static final Logger logger = LogManager.getLogger(SearchServiceJpa.class);
 
     public SearchServiceJpa(
@@ -38,6 +43,16 @@ public class SearchServiceJpa {
         this.locationRepository = locationRepository;
         this.activityRepository = activityRepository;
         this.dynamodbService = dynamodbService;
+    }
+
+    private void sendHeartBeat() {
+        scheduler.scheduleAtFixedRate(this::sendMessages, 0, 1000, TimeUnit.MILLISECONDS);
+    }
+
+    private void sendMessages() {
+        Heartbeat heartbeat = new Heartbeat(SERVICE_NAME, true, System.currentTimeMillis());
+        //        kafkaProducer.sendHeartbeat(heartbeat);
+
     }
 
     // @Cached(key = "searchResults:{#query}")

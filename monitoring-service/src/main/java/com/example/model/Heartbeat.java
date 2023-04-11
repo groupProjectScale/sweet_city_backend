@@ -10,8 +10,7 @@ public class Heartbeat {
 
     private long timeStamp;
 
-    public Heartbeat() {
-    }
+    public Heartbeat() {}
 
     public Heartbeat(String service, boolean isRunning, long timeStamp) {
         this.service = service;
@@ -45,10 +44,14 @@ public class Heartbeat {
 
     @Override
     public String toString() {
-        return "Heartbeat{" +
-                "service='" + service + '\'' +
-                ", isRunning=" + isRunning +
-                ", timeStamp=" + timeStamp +
-                '}';
+        return "Heartbeat{"
+                + "service='"
+                + service
+                + '\''
+                + ", isRunning="
+                + isRunning
+                + ", timeStamp="
+                + timeStamp
+                + '}';
     }
 }

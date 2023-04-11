@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package com.example.proto;
+
+
+message HeartbeatRequest {
+  string name = 1;
+  bool is_running = 2;
+  int64 time_stamp = 3;
+}
+
+
+message HeartbeatResponse {
+}
+
+
+service MonitoringService {
+
+  rpc Send(HeartbeatRequest) returns (HeartbeatResponse) {};
+
+}

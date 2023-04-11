@@ -1,14 +1,13 @@
 package com.example.model;
 
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-import org.springframework.data.cassandra.core.mapping.Column;
 import java.util.UUID;
+import org.springframework.data.cassandra.core.mapping.Column;
+import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 @Table("heartbeat_monitor")
 public class HeartbeatCassandraModel {
-    @PrimaryKey
-    private UUID id;
+    @PrimaryKey private UUID id;
 
     private String service;
 
@@ -18,8 +17,7 @@ public class HeartbeatCassandraModel {
     @Column("time_stamp")
     private long timeStamp;
 
-    public HeartbeatCassandraModel() {
-    }
+    public HeartbeatCassandraModel() {}
 
     public UUID getId() {
         return id;

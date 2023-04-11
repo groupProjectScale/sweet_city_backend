@@ -8,7 +8,6 @@ import com.example.dto.TagDto;
 import com.example.dto.UserLoginDto;
 import com.example.model.Activity;
 import com.example.model.Address;
-import com.example.model.Heartbeat;
 import com.example.model.Location;
 import com.example.model.Requirement;
 import com.example.model.Tag;
@@ -28,9 +27,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import com.example.services.kafka.KafkaProducer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,34 +42,41 @@ public class ActivityService {
     private final LocationRepository locationRepository;
     private final String SERVICE_NAME = "activity";
     private static final int RANKING = 5;
-    private KafkaProducer kafkaProducer;
+    //    ManagedChannel channel;
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
+    //    public ActivityServiceGrpc.ActivityServiceBlockingStub stub;
     public ActivityService(
             ActivityRepository activityRepository,
             UserRepository userRepository,
             AddressRepository addressRepository,
             LocationRepository locationRepository,
             TagRepository tagRepository,
-            RequirementRepository requirementRepository,
-            KafkaProducer kafkaProducer) {
+            RequirementRepository requirementRepository) {
         this.activityRepository = activityRepository;
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.locationRepository = locationRepository;
         this.tagRepository = tagRepository;
         this.requirementRepository = requirementRepository;
-        this.kafkaProducer = kafkaProducer;
+        //        this.channel = ManagedChannelBuilder.forAddress("localhost", 50051)
+        //                .usePlaintext()
+        //                .build();
+        //        this.stub = ActivityServiceGrpc.newBlockingStub(channel);
         this.sendHeartBeat();
     }
 
     private void sendHeartBeat() {
-        scheduler.scheduleAtFixedRate(this::sendMessages, 0, 1000, TimeUnit.MILLISECONDS);
+        //        scheduler.scheduleAtFixedRate(this::sendMessages, 0, 1000, TimeUnit.MILLISECONDS);
+        //        channel.shutdown();
     }
 
     private void sendMessages() {
-        Heartbeat heartbeat = new Heartbeat(SERVICE_NAME, true, System.currentTimeMillis());
-        kafkaProducer.sendHeartbeat(heartbeat);
+        //        ActivityServiceOuterClass.HeartbeatRequest request = new
+        // ActivityServiceOuterClass.HeartbeatRequest().newBuilder()
+        //
+        // .setName(SERVICE_NAME).setIsRunning(true).setTimeStamp(System.currentTimeMillis()).build();
+        //        stub.send(request);
     }
 
     public Optional<Activity> getActivityById(UUID activityId) {

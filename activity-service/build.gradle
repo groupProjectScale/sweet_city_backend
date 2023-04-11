@@ -4,6 +4,8 @@ plugins {
     id 'java'
     id "com.diffplug.spotless" version "6.11.0"
     id "org.flywaydb.flyway" version "9.8.1"
+    id 'com.google.protobuf' version '0.8.16'
+    id 'idea'
 }
 
 group 'org.example'
@@ -17,7 +19,7 @@ repositories {
 }
 
 dependencies {
-
+    implementation project(':monitoring-service')
     implementation(libs.springbootStarter)
     implementation(libs.springWeb)
     implementation(libs.springbootStarterWeb)
@@ -34,8 +36,10 @@ dependencies {
     implementation(libs.dynamoDB)
     implementation(libs.awsS3)
     implementation(libs.awsSqs)
-    implementation(libs.kafka)
-    implementation(libs.cassandra)
+    implementation(libs.grpc)
+    implementation(libs.protobuf)
+    implementation(libs.grpcStub)
+    implementation(libs.grpcNettyShaded)
     runtimeOnly(libsRuntimeOnly.postgresql)
 
     testImplementation(libsTest.springbootStarterTest)
@@ -78,4 +82,29 @@ flyway {
     url = "jdbc:postgresql://localhost:5432/sweetcity_PSQL"
     user = "postgres"
     password = "postgres"
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.17.3'
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.39.0'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
+
+
+// Solve imports issues
+idea {
+    module {
+        // Marks the already(!) added srcDir as "generated"
+        generatedSourceDirs += file('build/generated/source')
+    }
 }
