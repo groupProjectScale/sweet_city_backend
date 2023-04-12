@@ -1,13 +1,21 @@
 package com.example.services;
 
 import com.example.configurations.DynamodbConfiguration;
+import io.grpc.stub.StreamObserver;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+import proto.HeartbeatRequest;
+import proto.HeartbeatResponse;
+import proto.MonitoringServiceGrpc;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.DeleteItemRequest;
@@ -23,13 +31,50 @@ public class DynamodbService {
     private final DynamoDbClient dynamodbClient;
     private final String participantsStateTable;
     private final String liveParticipantsTable;
+    private final String SERVICE_NAME = "participant";
     private static final Logger logger = LogManager.getLogger(DynamodbService.class);
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+
+    @GrpcClient("sweetcity")
+    MonitoringServiceGrpc.MonitoringServiceStub stub;
 
     public DynamodbService(
             DynamoDbClient dynamodbClient, DynamodbConfiguration dynamodbConfiguration) {
         this.dynamodbClient = dynamodbClient;
         this.participantsStateTable = dynamodbConfiguration.participantsStateTable();
         this.liveParticipantsTable = dynamodbConfiguration.liveParticipantsTable();
+        sendHeartBeat();
+    }
+
+    private void sendHeartBeat() {
+        scheduler.scheduleAtFixedRate(this::sendHeartBeatMessage, 0, 10000, TimeUnit.MILLISECONDS);
+    }
+
+    private void sendHeartBeatMessage() {
+        try {
+            HeartbeatRequest request =
+                    HeartbeatRequest.newBuilder()
+                            .setName(SERVICE_NAME)
+                            .setIsRunning(true)
+                            .setTimeStamp(System.currentTimeMillis())
+                            .build();
+            stub.send(
+                    request,
+                    new StreamObserver<HeartbeatResponse>() {
+                        @Override
+                        public void onNext(HeartbeatResponse response) {}
+
+                        @Override
+                        public void onError(Throwable t) {
+                            logger.error(t.getMessage());
+                        }
+
+                        @Override
+                        public void onCompleted() {}
+                    });
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
     }
 
     public void incrementLiveParticipants(String activityUuid) {

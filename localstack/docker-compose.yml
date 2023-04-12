@@ -31,10 +31,10 @@ services:
       - metadata_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=sweetcity_PSQL
-    networks:
-      - backend
+#      - POSTGRES_PASSWORD=postgres
+#      - POSTGRES_DB=sweetcity_PSQL
+#    networks:
+#      - backend
 
   # kafak & zookeeper
 

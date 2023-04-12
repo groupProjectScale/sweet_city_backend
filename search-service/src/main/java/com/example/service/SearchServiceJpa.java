@@ -1,7 +1,6 @@
 package com.example.service;
 
 import com.example.model.Activity;
-import com.example.model.Heartbeat;
 import com.example.model.Location;
 import com.example.repository.ActivityRepository;
 import com.example.repository.LocationRepository;
@@ -19,12 +18,14 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+// import proto.HeartbeatRequest;
+// import proto.HeartbeatResponse;
+// import proto.MonitoringServiceGrpc;
 
 @Service
 public class SearchServiceJpa {
@@ -32,9 +33,12 @@ public class SearchServiceJpa {
     private final LocationRepository locationRepository;
     private final ActivityRepository activityRepository;
     private final DynamodbService dynamodbService;
-    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
     private final String SERVICE_NAME = "search";
     private static final Logger logger = LogManager.getLogger(SearchServiceJpa.class);
+
+    //    @GrpcClient("search")
+    //    MonitoringServiceGrpc.MonitoringServiceStub stub;
 
     public SearchServiceJpa(
             LocationRepository locationRepository,
@@ -43,17 +47,37 @@ public class SearchServiceJpa {
         this.locationRepository = locationRepository;
         this.activityRepository = activityRepository;
         this.dynamodbService = dynamodbService;
+        sendHeartBeat();
     }
 
     private void sendHeartBeat() {
-        scheduler.scheduleAtFixedRate(this::sendMessages, 0, 1000, TimeUnit.MILLISECONDS);
+        //        scheduler.scheduleAtFixedRate(this::sendHeartBeatMessage, 0, 10000,
+        // TimeUnit.MILLISECONDS);
     }
 
-    private void sendMessages() {
-        Heartbeat heartbeat = new Heartbeat(SERVICE_NAME, true, System.currentTimeMillis());
-        //        kafkaProducer.sendHeartbeat(heartbeat);
-
-    }
+    //    private void sendHeartBeatMessage() {
+    //        try {
+    //            HeartbeatRequest request = HeartbeatRequest.newBuilder()
+    //
+    // .setName(SERVICE_NAME).setIsRunning(true).setTimeStamp(System.currentTimeMillis()).build();
+    //            stub.send(request, new StreamObserver<HeartbeatResponse>() {
+    //                @Override
+    //                public void onNext(HeartbeatResponse response) {
+    //                }
+    //
+    //                @Override
+    //                public void onError(Throwable t) {
+    //                    logger.error(t.getMessage());
+    //                }
+    //
+    //                @Override
+    //                public void onCompleted() {
+    //                }
+    //            });
+    //        } catch (Exception e) {
+    //            logger.error(e.getMessage());
+    //        }
+    //    }
 
     // @Cached(key = "searchResults:{#query}")
     @Cached

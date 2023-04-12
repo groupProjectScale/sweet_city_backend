@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package com.example.proto;
-
+package proto;
+option java_multiple_files = true;
 
 message HeartbeatRequest {
   string name = 1;

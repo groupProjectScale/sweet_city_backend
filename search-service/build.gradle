@@ -17,8 +17,8 @@ repositories {
 }
 
 dependencies {
-
     implementation project(":activity-service")
+//    implementation project(':monitoring-service')
     implementation(libs.springbootStarter)
     implementation(libs.springWeb)
     implementation(libs.springbootStarterWeb)
@@ -36,7 +36,7 @@ dependencies {
     implementation(libs.grpc)
     implementation(libs.protobuf)
     implementation(libs.grpcStub)
-    implementation(libs.grpcNettyShaded)
+//    implementation(libs.grpcNettyShaded)
 
     runtimeOnly(libsRuntimeOnly.postgresql)
 

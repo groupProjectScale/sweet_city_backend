@@ -26,17 +26,6 @@ public class KafkaConsumer {
         BeanUtils.copyProperties(heartbeat, h);
         h.setId(UUID.randomUUID());
         heartbeatRepository.save(h);
-        System.out.println("success");
+        System.out.println(heartbeat.getService());
     }
-
-    //    private HeartbeatCassandraModel composeTracer(CoordinateTrace trace) {
-    //        var model = new CoordinateTracerCassandraModel();
-    //        model.setUserId((int)trace.getUserId());
-    //        model.setX(trace.getX());
-    //        model.setY(trace.getY());
-    //        model.setId(UUID.randomUUID());
-    //        System.out.println(trace.getTimestamp());
-    //        model.setTs(Instant.ofEpochMilli(trace.getTimestamp()));
-    //        return model;
-    //    }
 }
