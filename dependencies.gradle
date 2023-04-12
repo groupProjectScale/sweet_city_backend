@@ -11,7 +11,13 @@ ext.libs = [
     'dynamoDB': 'software.amazon.awssdk:dynamodb',
     'log4jApi': 'org.apache.logging.log4j:log4j-api:2.19.0',
     'log4jCore': 'org.apache.logging.log4j:log4j-core:2.19.0',
-    'redisson': 'org.redisson:redisson:3.20.0'
+    'kafka': 'org.springframework.kafka:spring-kafka',
+    'cassandra':'org.springframework.boot:spring-boot-starter-data-cassandra',
+    'redisson': 'org.redisson:redisson:3.20.0',
+    'grpc':'net.devh:grpc-spring-boot-starter:2.14.0.RELEASE',
+    'protobuf':'io.grpc:grpc-protobuf:1.42.0',
+    'grpcNettyShaded':'io.grpc:grpc-netty-shaded:1.42.0',
+    'grpcStub':'io.grpc:grpc-stub:1.42.0',
 ]
 
 ext.libsPlatform = [

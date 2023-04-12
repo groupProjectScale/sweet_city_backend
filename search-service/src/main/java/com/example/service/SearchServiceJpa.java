@@ -7,6 +7,7 @@ import com.example.repository.LocationRepository;
 import com.example.service.cache.annotations.Cached;
 import com.example.service.cache.annotations.CachedAsync;
 import com.example.services.DynamodbService;
+import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,11 +17,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import proto.HeartbeatRequest;
+import proto.HeartbeatResponse;
+import proto.MonitoringServiceGrpc;
 
 @Service
 public class SearchServiceJpa {
@@ -28,8 +36,12 @@ public class SearchServiceJpa {
     private final LocationRepository locationRepository;
     private final ActivityRepository activityRepository;
     private final DynamodbService dynamodbService;
-
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+    private final String SERVICE_NAME = "search";
     private static final Logger logger = LogManager.getLogger(SearchServiceJpa.class);
+
+    @GrpcClient("search")
+    MonitoringServiceGrpc.MonitoringServiceStub stub;
 
     public SearchServiceJpa(
             LocationRepository locationRepository,
@@ -38,6 +50,38 @@ public class SearchServiceJpa {
         this.locationRepository = locationRepository;
         this.activityRepository = activityRepository;
         this.dynamodbService = dynamodbService;
+        sendHeartBeat();
+    }
+
+    private void sendHeartBeat() {
+        scheduler.scheduleAtFixedRate(this::sendHeartBeatMessage, 10, 10, TimeUnit.SECONDS);
+    }
+
+    private void sendHeartBeatMessage() {
+        try {
+            HeartbeatRequest request =
+                    HeartbeatRequest.newBuilder()
+                            .setName(SERVICE_NAME)
+                            .setIsRunning(true)
+                            .setTimeStamp(System.currentTimeMillis())
+                            .build();
+            stub.send(
+                    request,
+                    new StreamObserver<HeartbeatResponse>() {
+                        @Override
+                        public void onNext(HeartbeatResponse response) {}
+
+                        @Override
+                        public void onError(Throwable t) {
+                            logger.error(t.getMessage());
+                        }
+
+                        @Override
+                        public void onCompleted() {}
+                    });
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
     }
 
     // @Cached(key = "searchResults:{#query}")

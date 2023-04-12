@@ -18,6 +18,7 @@ import com.example.repository.LocationRepository;
 import com.example.repository.RequirementRepository;
 import com.example.repository.TagRepository;
 import com.example.repository.UserRepository;
+import io.grpc.stub.StreamObserver;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -25,9 +26,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import proto.HeartbeatRequest;
+import proto.HeartbeatResponse;
+import proto.MonitoringServiceGrpc;
 
 @Service
 public class ActivityService {
@@ -38,7 +48,13 @@ public class ActivityService {
     private final TagRepository tagRepository;
     private final RequirementRepository requirementRepository;
     private final LocationRepository locationRepository;
+    private final String SERVICE_NAME = "activity";
     private static final int RANKING = 5;
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+    private static final Logger logger = LogManager.getLogger(ActivityService.class);
+
+    @GrpcClient("sweetcity")
+    MonitoringServiceGrpc.MonitoringServiceStub stub;
 
     public ActivityService(
             ActivityRepository activityRepository,
@@ -53,6 +69,38 @@ public class ActivityService {
         this.locationRepository = locationRepository;
         this.tagRepository = tagRepository;
         this.requirementRepository = requirementRepository;
+        sendHeartBeat();
+    }
+
+    private void sendHeartBeat() {
+        scheduler.scheduleAtFixedRate(this::sendHeartBeatMessage, 10, 10, TimeUnit.SECONDS);
+    }
+
+    private void sendHeartBeatMessage() {
+        try {
+            HeartbeatRequest request =
+                    HeartbeatRequest.newBuilder()
+                            .setName(SERVICE_NAME)
+                            .setIsRunning(true)
+                            .setTimeStamp(System.currentTimeMillis())
+                            .build();
+            stub.send(
+                    request,
+                    new StreamObserver<HeartbeatResponse>() {
+                        @Override
+                        public void onNext(HeartbeatResponse response) {}
+
+                        @Override
+                        public void onError(Throwable t) {
+                            logger.error(t.getMessage());
+                        }
+
+                        @Override
+                        public void onCompleted() {}
+                    });
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
     }
 
     public Optional<Activity> getActivityById(UUID activityId) {

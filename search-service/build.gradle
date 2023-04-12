@@ -17,8 +17,8 @@ repositories {
 }
 
 dependencies {
-
     implementation project(":activity-service")
+    implementation project(':monitoring-service')
     implementation(libs.springbootStarter)
     implementation(libs.springWeb)
     implementation(libs.springbootStarterWeb)
@@ -33,6 +33,9 @@ dependencies {
     implementation(libs.log4jCore)
     implementation(libs.dynamoDB)
     implementation(libs.redisson)
+    implementation(libs.grpc)
+    implementation(libs.protobuf)
+    implementation(libs.grpcStub)
 
     runtimeOnly(libsRuntimeOnly.postgresql)
 
