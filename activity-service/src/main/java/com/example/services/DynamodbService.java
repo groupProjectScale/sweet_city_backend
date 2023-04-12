@@ -47,7 +47,7 @@ public class DynamodbService {
     }
 
     private void sendHeartBeat() {
-        scheduler.scheduleAtFixedRate(this::sendHeartBeatMessage, 0, 10000, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(this::sendHeartBeatMessage, 10, 10, TimeUnit.SECONDS);
     }
 
     private void sendHeartBeatMessage() {

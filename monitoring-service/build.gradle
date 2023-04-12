@@ -34,8 +34,6 @@ dependencies {
     implementation(libs.cassandra)
     implementation(libs.grpc)
     implementation(libs.protobuf)
-//    implementation(libs.grpcStub)
-//    implementation(libs.grpcNettyShaded)
     runtimeOnly(libsRuntimeOnly.postgresql)
 
     testImplementation(libsTest.springbootStarterTest)
